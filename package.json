@@ -1,0 +1,63 @@
+{
+  "name": "eat-it-right",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "bump": "gulp bump --gulpfile 'gulp/gulpfile.babel.js'",
+    "lint": "eslint src",
+    "flow-check": "flow src",
+    "android": "react-native run-android",
+    "log-a": "react-native log-android",
+    "ios": "react-native run-ios",
+    "log-i": "react-native log-ios"
+  },
+  "dependencies": {
+    "lodash": "^4.17.10",
+    "mobx": "^5.0.3",
+    "mobx-react": "^5.2.3",
+    "moment": "^2.22.2",
+    "react": "^16.4.1",
+    "react-native": "^0.56.0-rc.5",
+    "react-native-interactable": "^0.1.10",
+    "react-native-logger": "^1.0.3",
+    "react-native-navigation": "^2.0.2418",
+    "react-native-sound": "^0.10.9",
+    "react-native-toast-native": "^1.2.1",
+    "react-native-vector-icons": "^4.6.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.52",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.52",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0-beta.53",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.52",
+    "@babel/preset-env": "^7.0.0-beta.52",
+    "babel-eslint": "^8.2.5",
+    "babel-jest": "23.4.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-preset-react-native": "^5.0.2",
+    "eslint": "^5.1.0",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-plugin-flowtype": "^2.50.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.0",
+    "eslint-plugin-prettier": "^2.6.2",
+    "eslint-plugin-react": "^7.10.0",
+    "eslint-plugin-react-native": "^3.2.1",
+    "flow-bin": "^0.76.0",
+    "git-validate": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.1",
+    "gulp-rename": "^1.3.0",
+    "gulp-replace": "^1.0.0",
+    "gulp-task-doc": "^1.0.11",
+    "jest": "23.4.1",
+    "minimist": "^1.2.0",
+    "prettier": "^1.13.7",
+    "react-test-renderer": "16.4.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
