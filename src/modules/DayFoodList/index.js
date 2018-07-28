@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import {
-  Animated, ActivityIndicator, StyleSheet, View, Text,
+  Animated, ActivityIndicator, StyleSheet, View, Text, ScrollView,
 } from 'react-native';
 import Interactable from 'react-native-interactable';
 import moment from 'moment';
@@ -17,21 +17,29 @@ type State = {
   animValue: Animated.Value,
   calendarHeight: number,
   isLayoutDone: boolean,
+  isScrollOn: boolean,
   currentDay: Date,
 };
 
 export default class DayFoodList extends React.Component<Props, State> {
-  interactableView: Interactable;
+  scrollView: Interactable;
 
   state = {
-    animValue: new Animated.Value(0),
+    animValue: new Animated.Value(400),
     calendarHeight: 400,
     isLayoutDone: false,
+    isScrollOn: false,
     currentDay: new Date(),
   };
 
   componentDidMount() {
-    this.interactableView.snapTo({ index: 1 });
+    this.scrollView.scrollTo({
+      x: 0,
+      y: (this.state.calendarHeight * MIN_HEADER_SCALE) - 40,
+      animated: false,
+    });
+
+    this.props.foodsStore.getAllFoods();
   }
 
   onDayChange = (day: Date) => this.setState({ currentDay: day });
@@ -45,18 +53,28 @@ export default class DayFoodList extends React.Component<Props, State> {
     }
   };
 
+  onSnap = ({ nativeEvent }: OnSnapEvent) => {
+    if (nativeEvent.index === 0) {
+      this.setState({ isScrollOn: false });
+    } else if (nativeEvent.index === 1) {
+      this.setState({ isScrollOn: true });
+    }
+  };
+
+  onScroll = Animated.event([{ nativeEvent: { contentOffset: { y: this.state.animValue } } }]);
+
   renderShortHeader() {
     const { animValue, calendarHeight, currentDay } = this.state;
 
     const opacity = animValue.interpolate({
-      inputRange: [-calendarHeight * MIN_HEADER_SCALE, 0],
-      outputRange: [1, 0],
+      inputRange: [0, calendarHeight * MIN_HEADER_SCALE],
+      outputRange: [0, 1],
       extrapolate: 'clamp',
     });
 
     const translateY = animValue.interpolate({
-      inputRange: [-calendarHeight, 0],
-      outputRange: [0, 20],
+      inputRange: [0, calendarHeight],
+      outputRange: [10, 2],
       extrapolate: 'clamp',
     });
 
@@ -85,12 +103,6 @@ export default class DayFoodList extends React.Component<Props, State> {
   renderCalendar() {
     const { animValue, calendarHeight } = this.state;
 
-    const translateY = animValue.interpolate({
-      inputRange: [-calendarHeight, 0],
-      outputRange: [-calendarHeight, 0],
-      extrapolate: 'clamp',
-    });
-
     const opacity = animValue.interpolate({
       inputRange: [-calendarHeight * MIN_HEADER_SCALE, 0],
       outputRange: [0, 1],
@@ -99,8 +111,8 @@ export default class DayFoodList extends React.Component<Props, State> {
 
     return (
       <Animated.View
+        style={{ opacity }}
         onLayout={this.onLayout}
-        style={{ opacity, transform: [{ translateY }] }}
       >
         <Calendar onDayPress={this.onDayChange} />
       </Animated.View>
@@ -108,20 +120,21 @@ export default class DayFoodList extends React.Component<Props, State> {
   }
 
   render() {
-    const { animValue, calendarHeight } = this.state;
+    const { animValue, calendarHeight, isScrollOn } = this.state;
 
     return (
       <View style={styles.container}>
-        {this.renderCalendar()}
-
-        <Interactable.View
-          ref={r => this.interactableView = r}
-          verticalOnly
-          snapPoints={[{ y: 0 }, { y: -calendarHeight * MIN_HEADER_SCALE }]}
-          boundaries={{ top: -calendarHeight }}
-          animatedValueY={animValue}
+        <ScrollView
+          style={styles.content}
+          ref={r => this.scrollView = r}
+          onScroll={this.onScroll}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
         >
-          <View style={styles.content}>
+          {this.renderCalendar()}
+          {
+
+          }
             <Row hour='09:00' text='Reminder Only: UX' />
             <Row hour='10:20' text='Mobile Guild Core - Daily' />
             <Row hour='18:00' text='Mobile Happy Thursday!' />
@@ -132,8 +145,7 @@ export default class DayFoodList extends React.Component<Props, State> {
             <Row hour='18:00' text='Mobile Happy Thursday!' />
             <Row hour='18:00' text='Mobile Happy Thursday!' />
             <Row hour='18:00' text='Mobile Happy Thursday!' />
-          </View>
-        </Interactable.View>
+        </ScrollView>
 
         {this.renderShortHeader()}
       </View>
@@ -160,19 +172,14 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    backgroundColor: 'white'
-  },
-
-  stylesCont: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: colors.main,
   },
 
   shortHeaderCont: {
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.main,
     width: '100%',
   },
 
@@ -186,6 +193,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderBottomWidth: 1,
     borderColor: '#eeeeee',
+    backgroundColor: colors.white,
     height: 80,
     alignItems: 'center'
   },

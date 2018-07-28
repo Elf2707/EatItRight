@@ -3,6 +3,12 @@
   "plugins": [
     "transform-flow-strip-types",
     "@babel/plugin-proposal-export-default-from",
-    "@babel/plugin-proposal-export-namespace-from"
+    "@babel/plugin-proposal-export-namespace-from",
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-transform-runtime", {
+      "helpers": true,
+      "polyfill": false,
+      "regenerator": false
+    }]
   ]
 }

@@ -11,3 +11,40 @@ export type OnLayoutEvent = {
     },
   },
 };
+
+export type OnSnapEvent = {
+  index: number,
+  id: ?number,
+  target: number,
+};
+
+export type OnScrollEvent = {
+  contentInset: {
+    bottom: number,
+    top: number,
+    left: number,
+    right: number,
+  },
+  zoomScale: number,
+  contentOffset: {
+    y: number,
+    x: number,
+  },
+  layoutMeasurement: {
+    height: number,
+    width: number,
+  },
+  contentSize: {
+    height: number,
+    width: number,
+  },
+};
+
+// Stores
+export type FoodsStore = {
+
+};
+
+export type MainStore = {
+  foodStore: FoodsStore,
+};
