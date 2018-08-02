@@ -1,5 +1,4 @@
 // @flow
-
 export type FoodItemData = {
   id: number,
   name: string,
@@ -9,7 +8,10 @@ export type FoodItemData = {
 };
 
 export type DayFoodItemData = {
-  item_id: number,
+  name: string,
   added_at: string,
   weight: number,
+  protein: number,
+  fat: number,
+  carbohydrate: number,
 };

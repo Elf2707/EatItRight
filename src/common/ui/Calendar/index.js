@@ -124,8 +124,8 @@ export default class Calendar extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    padding: 20,
-    paddingTop: 0,
+    paddingHorizontal: 20,
+    paddingVertical: 0,
     backgroundColor: colors.main,
   },
 

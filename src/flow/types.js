@@ -41,10 +41,11 @@ export type OnScrollEvent = {
 };
 
 // Stores
-export type FoodsStore = {
-
+export type FoodsStoreData = {
+  dayFoods: Array<DayFoodItemData>,
+  getAllFoods: () => void,
 };
 
-export type MainStore = {
-  foodStore: FoodsStore,
+export type MainStoreData = {
+  foodsStore: FoodsStoreData,
 };

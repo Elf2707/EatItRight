@@ -1,5 +1,8 @@
 // @flow
 export default {
-  arrowLeft: require('./icons/ic_arrow_left.png'),
-  arrowRight: require('./icons/ic_arrow_right.png'),
+  arrowLeftIcon: require('./icons/ic_arrow_left.png'),
+  arrowRightIcon: require('./icons/ic_arrow_right.png'),
+  dayFoodIcon: require('./icons/day_food_icon.png'),
+  foodsListIcon: require('./icons/foods_list.png'),
+  addFoodIcon: require('./icons/add_food.png'),
 };

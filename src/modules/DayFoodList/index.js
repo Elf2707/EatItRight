@@ -1,15 +1,22 @@
 // @flow
 import React from 'react';
 import {
-  Animated, ActivityIndicator, StyleSheet, View, Text, ScrollView,
+  Animated, StyleSheet, View, ScrollView, Dimensions,
 } from 'react-native';
+import { observer, inject } from 'mobx-react/native';
 import Interactable from 'react-native-interactable';
 import moment from 'moment';
 
 import { colors, Calendar } from '../../common/ui';
+import DayFoodItem from './components/DayFoodItem';
+import Total from './components/Total';
 
+const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 const MIN_HEADER_SCALE = 0.85;
+const MIN_HEADER_H = 110;
+
 type Props = {
+  foodsStore: FoodsStoreData,
   navigator: Navigator,
 }
 
@@ -17,18 +24,28 @@ type State = {
   animValue: Animated.Value,
   calendarHeight: number,
   isLayoutDone: boolean,
-  isScrollOn: boolean,
   currentDay: Date,
 };
 
+@inject('foodsStore')
+@observer
 export default class DayFoodList extends React.Component<Props, State> {
+  static get options() {
+    return {
+      topBar: {
+        drawBehind: true,
+        visible: false,
+        animate: false,
+      },
+    };
+  }
+
   scrollView: Interactable;
 
   state = {
     animValue: new Animated.Value(400),
     calendarHeight: 400,
     isLayoutDone: false,
-    isScrollOn: false,
     currentDay: new Date(),
   };
 
@@ -39,7 +56,11 @@ export default class DayFoodList extends React.Component<Props, State> {
       animated: false,
     });
 
-    this.props.foodsStore.getAllFoods();
+    this.props.foodsStore.getDayFoods();
+  }
+
+  componentWillUnmount() {
+    this.state.animValue.removeAllListeners();
   }
 
   onDayChange = (day: Date) => this.setState({ currentDay: day });
@@ -53,15 +74,11 @@ export default class DayFoodList extends React.Component<Props, State> {
     }
   };
 
-  onSnap = ({ nativeEvent }: OnSnapEvent) => {
-    if (nativeEvent.index === 0) {
-      this.setState({ isScrollOn: false });
-    } else if (nativeEvent.index === 1) {
-      this.setState({ isScrollOn: true });
-    }
-  };
-
-  onScroll = Animated.event([{ nativeEvent: { contentOffset: { y: this.state.animValue } } }]);
+  onScroll = Animated.event([{
+    nativeEvent: {
+      contentOffset: { y: this.state.animValue },
+    },
+  }]);
 
   renderShortHeader() {
     const { animValue, calendarHeight, currentDay } = this.state;
@@ -74,20 +91,12 @@ export default class DayFoodList extends React.Component<Props, State> {
 
     const translateY = animValue.interpolate({
       inputRange: [0, calendarHeight],
-      outputRange: [10, 2],
+      outputRange: [0, -14],
       extrapolate: 'clamp',
     });
 
     return (
-      <Animated.View
-        style={[
-          styles.shortHeaderCont, {
-            opacity,
-            translateY,
-            height: (calendarHeight * (1 - MIN_HEADER_SCALE)) + 20,
-          },
-        ]}
-      >
+      <Animated.View style={[styles.shortHeaderCont, { opacity }]}>
         <Animated.Text
           style={[
             styles.shortHeaderText,
@@ -96,6 +105,7 @@ export default class DayFoodList extends React.Component<Props, State> {
         >
           {moment(currentDay).format('DD MMMM YYYY')}
         </Animated.Text>
+        <Total dayFoods={this.props.foodsStore.dayFoods} />
       </Animated.View>
     );
   }
@@ -120,45 +130,30 @@ export default class DayFoodList extends React.Component<Props, State> {
   }
 
   render() {
-    const { animValue, calendarHeight, isScrollOn } = this.state;
+    const { foodsStore } = this.props;
+    const height = SCREEN_H - (MIN_HEADER_H
+      + (foodsStore.dayFoods.length * 80));
 
     return (
       <View style={styles.container}>
         <ScrollView
           style={styles.content}
+          // eslint-disable-next-line no-return-assign
           ref={r => this.scrollView = r}
           onScroll={this.onScroll}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
         >
           {this.renderCalendar()}
-          {
 
-          }
-            <Row hour='09:00' text='Reminder Only: UX' />
-            <Row hour='10:20' text='Mobile Guild Core - Daily' />
-            <Row hour='18:00' text='Mobile Happy Thursday!' />
-            <Row hour='18:00' text='Mobile Happy Thursday!' />
-            <Row hour='18:00' text='Mobile Happy Thursday!' />
-            <Row hour='18:00' text='Mobile Happy Thursday!' />
-            <Row hour='18:00' text='Mobile Happy Thursday!' />
-            <Row hour='18:00' text='Mobile Happy Thursday!' />
-            <Row hour='18:00' text='Mobile Happy Thursday!' />
-            <Row hour='18:00' text='Mobile Happy Thursday!' />
+          {foodsStore.dayFoods.map(item => (
+            <DayFoodItem key={`${Math.random() * 10000000}`} item={item} />
+          ))}
+
+          <View style={[styles.emptyView, { height }]} />
         </ScrollView>
 
         {this.renderShortHeader()}
-      </View>
-    );
-  }
-}
-
-class Row extends React.Component {
-  render() {
-    return (
-      <View style={styles.row}>
-        <Text style={styles.hour}>{this.props.hour}</Text>
-        <Text style={styles.text}>{this.props.text}</Text>
       </View>
     );
   }
@@ -177,10 +172,11 @@ const styles = StyleSheet.create({
 
   shortHeaderCont: {
     position: 'absolute',
+    height: MIN_HEADER_H,
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.main,
-    width: '100%',
   },
 
   shortHeaderText: {
@@ -188,26 +184,8 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
 
-  row: {
-    flexDirection: 'row',
+  emptyView: {
     width: '100%',
-    borderBottomWidth: 1,
-    borderColor: '#eeeeee',
     backgroundColor: colors.white,
-    height: 80,
-    alignItems: 'center'
-  },
-
-  hour: {
-    width: 80,
-    textAlign: 'center',
-    color: '#b0b0b0',
-    fontSize: 14,
-    fontWeight: 'bold'
-  },
-
-  text: {
-    flex: 1,
-    fontSize: 24,
   },
 });

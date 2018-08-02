@@ -2,7 +2,7 @@
 import FoodsStore from './FoodsStore';
 
 class Store {
-  foodsStore: FoodsStore;
+  foodsStore: FoodsStoreData;
 
   constructor() {
     this.foodsStore = new FoodsStore(this);

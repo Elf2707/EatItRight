@@ -39,7 +39,7 @@ export default class CalendarHeader extends React.Component<Props> {
         : (
           <Image
             style={styles.arrowIcon}
-            source={images.arrowLeft}
+            source={images.arrowLeftIcon}
             resizeMode="contain"
           />
         )}
@@ -60,7 +60,7 @@ export default class CalendarHeader extends React.Component<Props> {
         : (
           <Image
             style={styles.arrowIcon}
-            source={images.arrowRight}
+            source={images.arrowRightIcon}
             resizeMode="contain"
           />
         )}
