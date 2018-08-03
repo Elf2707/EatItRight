@@ -19,24 +19,34 @@ export type OnSnapEvent = {
 };
 
 export type OnScrollEvent = {
-  contentInset: {
-    bottom: number,
-    top: number,
-    left: number,
-    right: number,
-  },
-  zoomScale: number,
-  contentOffset: {
-    y: number,
-    x: number,
-  },
-  layoutMeasurement: {
-    height: number,
-    width: number,
-  },
-  contentSize: {
-    height: number,
-    width: number,
+  nativeEvent: {
+    contentInset: {
+      bottom: number,
+      top: number,
+      left: number,
+      right: number,
+    },
+    zoomScale: number,
+    contentOffset: {
+      y: number,
+      x: number,
+    },
+    targetContentOffset: {
+      y: number,
+      x: number,
+    },
+    layoutMeasurement: {
+      height: number,
+      width: number,
+    },
+    contentSize: {
+      height: number,
+      width: number,
+    },
+    velocity: {
+      y: number,
+      x: number,
+    },
   },
 };
 

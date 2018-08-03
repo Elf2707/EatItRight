@@ -52,7 +52,7 @@ export default class DayFoodList extends React.Component<Props, State> {
   componentDidMount() {
     this.scrollView.scrollTo({
       x: 0,
-      y: (this.state.calendarHeight * MIN_HEADER_SCALE) - 40,
+      y: (this.state.calendarHeight - MIN_HEADER_H) - 65,
       animated: false,
     });
 
@@ -80,11 +80,27 @@ export default class DayFoodList extends React.Component<Props, State> {
     },
   }]);
 
+  onScrollEndDrag = ({ nativeEvent }: OnScrollEvent) => {
+    if (nativeEvent.targetContentOffset.y > this.state.calendarHeight / 2) {
+      this.scrollView.scrollTo({
+        x: 0,
+        y: this.state.calendarHeight,
+        animated: true,
+      });
+    } else {
+      this.scrollView.scrollTo({
+        x: 0,
+        y: (this.state.calendarHeight - MIN_HEADER_H) - 65,
+        animated: true,
+      });
+    }
+  };
+
   renderShortHeader() {
     const { animValue, calendarHeight, currentDay } = this.state;
 
     const opacity = animValue.interpolate({
-      inputRange: [0, calendarHeight * MIN_HEADER_SCALE],
+      inputRange: [0, calendarHeight],
       outputRange: [0, 1],
       extrapolate: 'clamp',
     });
@@ -143,6 +159,7 @@ export default class DayFoodList extends React.Component<Props, State> {
           onScroll={this.onScroll}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
+          onScrollEndDrag={this.onScrollEndDrag}
         >
           {this.renderCalendar()}
 
