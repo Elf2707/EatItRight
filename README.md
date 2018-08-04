@@ -1,4 +1,4 @@
-# Warehouse Application
+# EatItRight Application
 
 ## Install a development version
 
@@ -19,7 +19,7 @@
     
 4. Go to the root folder
     ```
-    cd WarehouseApp
+    cd EatItRight
     ```
 
 5. Install local dependence:
