@@ -48,6 +48,6 @@
 
 ### Increase version:
 
-    npm run bump
+    yarn bump
 
 ### Release publishing
