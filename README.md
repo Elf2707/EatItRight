@@ -24,7 +24,7 @@
 
 5. Install local dependence:
     ```
-    npm install
+    yarn install
     ```
 6. Start the application
     ```
