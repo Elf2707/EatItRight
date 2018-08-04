@@ -1,11 +1,17 @@
 // @flow
 import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {
+  Animated, View, StyleSheet, Text, TouchableOpacity, ScrollView, Keyboard,
+  UIManager,
+} from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Navigation } from 'react-native-navigation';
 import { Jiro } from 'react-native-textinput-effects';
 
 import { colors } from '../../common/ui';
+
+const INPUT_H = 80;
+const KEYBOARD_OFFSET = 70;
 
 type Props = {
   style?: Object,
@@ -20,17 +26,25 @@ type State = {
   fat: string,
   carbohydrate: string,
   weight: string,
+  inputYPos: number,
+  animValue: Animated.Value,
 };
 
 @inject('foodsStore')
 @observer
 export default class EditFoodItem extends React.Component<Props, State> {
+  keyboardDidShowListener: KeyboardEventListener;
+  keyboardDidHideListener: KeyboardEventListener;
+  scrollView: ScrollView;
+
   state = {
     name: this.props.item.name,
     protein: `${this.props.item.protein}`,
     fat: `${this.props.item.fat}`,
     carbohydrate: `${this.props.item.carbohydrate}`,
     weight: '',
+    inputYPos: 0,
+    animValue: new Animated.Value(0),
   };
 
   componentDidMount() {
@@ -41,7 +55,38 @@ export default class EditFoodItem extends React.Component<Props, State> {
     Navigation.mergeOptions(this.props.componentId, {
       topBar: { title: { text: titleText } },
     });
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this.onKeyboardDidShow
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this.onKeyboardDidHide
+    );
   }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  onKeyboardDidShow = (e: OnKeyboardEvent) => {
+    const inputPos = this.state.inputYPos + INPUT_H + KEYBOARD_OFFSET;
+
+    if (e.endCoordinates.screenY < inputPos) {
+      Animated.timing(this.state.animValue, {
+        toValue: e.endCoordinates.screenY - inputPos,
+        duration: 250,
+      }).start(() => this.scrollView.scrollToEnd());
+    }
+  };
+
+  onKeyboardDidHide = () => {
+    Animated.timing(this.state.animValue, {
+      toValue: 0,
+      duration: 250,
+    }).start(() => this.setState({ inputYPos: 0 }));
+  };
 
   onAddPress = () => {
     const { name, protein, fat, carbohydrate, weight } = this.state;
@@ -61,6 +106,16 @@ export default class EditFoodItem extends React.Component<Props, State> {
     Navigation.pop(this.props.componentId);
   };
 
+  onFocus = ({ nativeEvent }: OnFocusEvent) => {
+    this.setState({ inputYPos: 0 });
+    UIManager.measure(nativeEvent.target, (ox, oy, width, height, px, py) => {
+      this.setState({ inputYPos: py });
+      // console.log('tttttttttt --- 0');
+      // console.log(ox, oy, width, height, px, py);
+      // console.log('tttttttttt --- 1');
+    });
+  };
+
   renderInputs() {
     const { isEditMode } = this.props;
     const { name, protein, fat, carbohydrate, weight } = this.state;
@@ -75,6 +130,8 @@ export default class EditFoodItem extends React.Component<Props, State> {
             label="Name"
             borderColor={colors.weight}
             value={name}
+            selectionColor={colors.white}
+            onFocus={this.onFocus}
             onChangeText={text => this.setState({ name: text })}
           />
         )}
@@ -86,9 +143,12 @@ export default class EditFoodItem extends React.Component<Props, State> {
           label="Protein"
           borderColor={colors.protein}
           value={protein}
-          editable={isEditMode}
+          editable={!isEditMode}
+          selectionColor={colors.white}
+          onFocus={this.onFocus}
           onChangeText={text => this.setState({ protein: text })}
         />
+
         <Jiro
           style={styles.inputCont}
           inputStyle={styles.input}
@@ -96,7 +156,9 @@ export default class EditFoodItem extends React.Component<Props, State> {
           label="Fat"
           borderColor={colors.fat}
           value={fat}
-          editable={isEditMode}
+          editable={!isEditMode}
+          selectionColor={colors.white}
+          onFocus={this.onFocus}
           onChangeText={text => this.setState({ fat: text })}
         />
         <Jiro
@@ -104,9 +166,11 @@ export default class EditFoodItem extends React.Component<Props, State> {
           inputStyle={styles.input}
           labelStyle={styles.inputLabel}
           label="Carbohydrate"
-          borderColor={colors.carb}
+          borderColor={colors.carbohydrate}
           value={carbohydrate}
-          editable={isEditMode}
+          editable={!isEditMode}
+          selectionColor={colors.white}
+          onFocus={this.onFocus}
           onChangeText={text => this.setState({ carbohydrate: text })}
         />
         {!isEditMode && (
@@ -117,6 +181,8 @@ export default class EditFoodItem extends React.Component<Props, State> {
             label="Weight"
             borderColor={colors.weight}
             value={weight}
+            selectionColor={colors.white}
+            onFocus={this.onFocus}
             onChangeText={text => this.setState({ weight: text })}
           />
         )}
@@ -125,20 +191,26 @@ export default class EditFoodItem extends React.Component<Props, State> {
   }
 
   render() {
-    const { style } = this.props;
-
     return (
-      <View style={[styles.container, style]}>
-        {this.renderInputs()}
-
-        <TouchableOpacity
-          style={styles.btn}
-          title="Adddd"
-          color={colors.white}
-          onPress={this.onAddPress}
+      <View style={[styles.container, this.props.style]}>
+        <ScrollView
+          // eslint-disable-next-line no-return-assign
+          ref={r => this.scrollView = r}
         >
-          <Text style={styles.btnText}>Add</Text>
-        </TouchableOpacity>
+          {this.renderInputs()}
+
+          <TouchableOpacity
+            style={styles.btn}
+            color={colors.white}
+            onPress={this.onAddPress}
+          >
+            <Text style={styles.btnText}>Add</Text>
+          </TouchableOpacity>
+
+          <Animated.View
+            style={{ height: Animated.multiply(this.state.animValue, -1) }}
+          />
+        </ScrollView>
       </View>
     );
   }

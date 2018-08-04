@@ -218,6 +218,7 @@ export default {
       carbohydrate: 0.7,
     },
   ],
+
   foodStuff1: [
     {
       id: 1,
@@ -240,7 +241,29 @@ export default {
       fat: 30,
       carbohydrate: 59,
     },
+    {
+      id: 10,
+      name: 'Шаурма',
+      protein: 9,
+      fat: 9,
+      carbohydrate: 20,
+    },
+    {
+      id: 20,
+      name: 'Халва',
+      protein: 12,
+      fat: 35,
+      carbohydrate: 45,
+    },
+    {
+      id: 30,
+      name: 'Шоколадка Россия',
+      protein: 6.3,
+      fat: 30,
+      carbohydrate: 59,
+    },
   ],
+
   dayFoodStuff1: [
     {
       id: 1,
@@ -268,6 +291,38 @@ export default {
     },
     {
       id: 4,
+      name: 'Персик',
+      protein: 0.95,
+      fat: 0.25,
+      carbohydrate: 11,
+      weight: 30,
+    },
+    {
+      id: 10,
+      name: 'Шаурма',
+      protein: 9,
+      fat: 9,
+      carbohydrate: 20,
+      weight: 50,
+    },
+    {
+      id: 20,
+      name: 'Халва',
+      protein: 12,
+      fat: 35,
+      carbohydrate: 45,
+      weight: 150,
+    },
+    {
+      id: 30,
+      name: 'Шоколадка Россия',
+      protein: 6.3,
+      fat: 30,
+      carbohydrate: 59,
+      weight: 200,
+    },
+    {
+      id: 40,
       name: 'Персик',
       protein: 0.95,
       fat: 0.25,

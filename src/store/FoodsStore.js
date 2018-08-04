@@ -24,9 +24,6 @@ export default class FoodsStore {
 
   @action
   addNewDayFoodItem(item: DayFoodItemData) {
-    console.log('ttttttttttttttt -- 000');
-    console.log(item);
-    console.log('ttttttttttttttt -- 111');
     this.dayFoods = this.dayFoods.concat(item);
   }
 }

@@ -78,26 +78,28 @@ const styles = StyleSheet.create({
 
   proteinCont: {
     backgroundColor: colors.protein,
-    padding: 8,
-    borderRadius: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    minWidth: 70,
   },
 
   fatCont: {
     backgroundColor: colors.fat,
-    padding: 8,
-    borderRadius: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
     minWidth: 70,
   },
 
   carbCont: {
-    backgroundColor: colors.carb,
-    padding: 8,
-    borderRadius: 16,
+    backgroundColor: colors.carbohydrate,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
     minWidth: 70,

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import {
-  Animated, StyleSheet, View, ScrollView, Dimensions,
+  Animated, StyleSheet, View, ScrollView, Dimensions, InteractionManager,
 } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import Interactable from 'react-native-interactable';
@@ -11,9 +11,10 @@ import { colors, Calendar } from '../../common/ui';
 import DayFoodItem from './components/DayFoodItem';
 import Total from './components/Total';
 
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
-const MIN_HEADER_SCALE = 0.85;
+const SCREEN_H = Dimensions.get('window').height;
+const SCROLL_THRESHOLD = 120;
 const MIN_HEADER_H = 110;
+const TOP_SCROLL_POS = 220;
 
 type Props = {
   foodsStore: FoodsStoreData,
@@ -63,7 +64,11 @@ export default class DayFoodList extends React.Component<Props, State> {
     this.state.animValue.removeAllListeners();
   }
 
-  onDayChange = (day: Date) => this.setState({ currentDay: day });
+  onDayChange = (day: Date) => {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ currentDay: day });
+    });
+  };
 
   onLayout = ({ nativeEvent }: OnLayoutEvent) => {
     if (!this.state.isLayoutDone) {
@@ -81,16 +86,18 @@ export default class DayFoodList extends React.Component<Props, State> {
   }]);
 
   onScrollEndDrag = ({ nativeEvent }: OnScrollEvent) => {
-    if (nativeEvent.targetContentOffset.y > this.state.calendarHeight / 2) {
+    if (nativeEvent.contentOffset.y >= TOP_SCROLL_POS) return;
+
+    if (Math.abs(nativeEvent.contentOffset.y) >= SCROLL_THRESHOLD) {
       this.scrollView.scrollTo({
         x: 0,
-        y: this.state.calendarHeight,
+        y: TOP_SCROLL_POS,
         animated: true,
       });
     } else {
       this.scrollView.scrollTo({
         x: 0,
-        y: (this.state.calendarHeight - MIN_HEADER_H) - 65,
+        y: 0,
         animated: true,
       });
     }
@@ -100,13 +107,13 @@ export default class DayFoodList extends React.Component<Props, State> {
     const { animValue, calendarHeight, currentDay } = this.state;
 
     const opacity = animValue.interpolate({
-      inputRange: [0, calendarHeight],
+      inputRange: [0, calendarHeight - MIN_HEADER_H],
       outputRange: [0, 1],
       extrapolate: 'clamp',
     });
 
     const translateY = animValue.interpolate({
-      inputRange: [0, calendarHeight],
+      inputRange: [0, calendarHeight - MIN_HEADER_H],
       outputRange: [0, -14],
       extrapolate: 'clamp',
     });
@@ -130,7 +137,7 @@ export default class DayFoodList extends React.Component<Props, State> {
     const { animValue, calendarHeight } = this.state;
 
     const opacity = animValue.interpolate({
-      inputRange: [-calendarHeight * MIN_HEADER_SCALE, 0],
+      inputRange: [-calendarHeight, 0],
       outputRange: [0, 1],
       extrapolate: 'clamp',
     });

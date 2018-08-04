@@ -57,13 +57,15 @@ export default class Calendar extends React.Component<Props, State> {
   }
 
   onDayPress = (dayDate: moment) => {
-    this.setState({ selectedDate: dayDate }, () => {
+    requestAnimationFrame(() => {
+      this.setState({ selectedDate: dayDate });
+
       const { onDayPress } = this.props;
       if (onDayPress) {
         onDayPress(dayDate.toDate());
       }
     });
-  }
+  };
 
   renderCalendar() {
     const { monthDate, selectedDate } = this.state;
@@ -86,7 +88,7 @@ export default class Calendar extends React.Component<Props, State> {
                 { opacity },
               ]}
               onPress={() => this.onDayPress(date)}
-              key={date}
+              key={date.format('YYYY-MM-DD')}
               disabled={moment().isBefore(date, 'day')}
             >
               <Text style={styles.dayText}>

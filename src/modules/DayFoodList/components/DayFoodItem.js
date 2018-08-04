@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import moment from 'moment';
 
-import { colors } from '../../../common/ui';
+import { colors, FoodIngredient } from '../../../common/ui';
 
 type Props = {
   item: DayFoodItemData,
@@ -31,18 +31,23 @@ export default class DayFoodItem extends React.Component<Props> {
           </Text>
 
           <View style={styles.itemParamsCont}>
-            <Text style={styles.itemParamsText}>
-              <Text style={styles.itemParamsHeaderText}>P: </Text>
-              {item.protein}
-            </Text>
-            <Text style={styles.itemParamsText}>
-              <Text style={styles.itemParamsHeaderText}>F: </Text>
-              {item.fat}
-            </Text>
-            <Text style={styles.itemParamsText}>
-              <Text style={styles.itemParamsHeaderText}>C: </Text>
-              {item.carbohydrate}
-            </Text>
+            <FoodIngredient
+              style={styles.ingredient}
+              backgroundColor={colors.protein}
+              text={`P: ${item.protein}`}
+            />
+
+            <FoodIngredient
+              style={styles.ingredient}
+              backgroundColor={colors.fat}
+              text={`F: ${item.fat}`}
+            />
+
+            <FoodIngredient
+              style={styles.ingredient}
+              backgroundColor={colors.carbohydrate}
+              text={`C: ${item.carbohydrate}`}
+            />
           </View>
         </View>
         <Text style={styles.weightText}>
@@ -89,15 +94,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 
-  itemParamsText: {
-    fontSize: 16,
-    color: colors.mainText,
-    marginRight: 20,
-  },
-
-  itemParamsHeaderText: {
-    fontSize: 16,
-    color: colors.subText,
+  ingredient: {
+    marginRight: 10,
   },
 
   weightText: {

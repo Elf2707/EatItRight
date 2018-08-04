@@ -50,6 +50,35 @@ export type OnScrollEvent = {
   },
 };
 
+export type OnKeyboardEvent = {
+  easing: string,
+  duration: number,
+  endCoordinates: {
+    height: number,
+    screenX: number,
+    width: number,
+    screenY: number
+  },
+  startCoordinates: {
+    height: number,
+    screenX: number,
+    width: number,
+    screenY: number,
+  },
+};
+
+export type OnFocusEvent = {
+  nativeEvent: {
+    target: number,
+    text: string,
+    eventCount: number,
+  },
+};
+
+export type KeyboardEventListener = {
+  remove: () => vois,
+};
+
 // Stores
 export type FoodsStoreData = {
   dayFoods: Array<DayFoodItemData>,
