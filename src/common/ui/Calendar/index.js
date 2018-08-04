@@ -1,46 +1,39 @@
 // @flow
 import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import moment from 'moment';
 import _ from 'lodash';
 
 import { colors } from '../index';
 import { dateHelper } from '../../helpers';
 import CalendarHeader from './components/CalendarHeader';
+import Week from './components/Week';
 
 type Props = {
   style?: Object,
-  currentDate?: Date,
+  selectedDate: Date,
   firstDayOfWeek?: number,
   hideDayNames?: boolean,
   hideArrows: boolean,
-  onDayPress?: (day: Date) => void,
+  onDayPress: (day: Date) => void,
   onMonthChange?: (currentDate: ?Date) => void,
   renderArrow?: (direction: 'left' | 'right') => any,
 };
 
 type State = {
   monthDate: moment,
-  selectedDate: moment,
 };
 
 export default class Calendar extends React.Component<Props, State> {
   static defaultProps = {
-    currentDate: moment(),
     firstDayOfWeek: 0,
     hideDayNames: false,
     hideArrows: false,
   };
 
-  constructor(props: Props) {
-    super(props);
-
-    // eslint-disable-next-line immutable/no-mutation
-    this.state = {
-      monthDate: moment(props.currentDate),
-      selectedDate: moment(props.currentDate),
-    };
-  }
+  state = {
+    monthDate: moment(this.props.selectedDate),
+  };
 
   changeMonth = (count: number) => {
     this.setState((state) => {
@@ -56,55 +49,13 @@ export default class Calendar extends React.Component<Props, State> {
     });
   }
 
-  onDayPress = (dayDate: moment) => {
-    requestAnimationFrame(() => {
-      this.setState({ selectedDate: dayDate });
-
-      const { onDayPress } = this.props;
-      if (onDayPress) {
-        onDayPress(dayDate.toDate());
-      }
-    });
-  };
-
-  renderCalendar() {
-    const { monthDate, selectedDate } = this.state;
-    const days = _.chunk(dateHelper.page(monthDate), 7);
-
-    return days.map(weekDays => (
-      <View
-        style={styles.weekContInDayMode}
-        key={`${Math.random() * 10000000}`}
-      >
-        {weekDays.map((date) => {
-          const isFuture = moment().isBefore(date, 'day');
-          const isSelected = selectedDate.isSame(date, 'day');
-          const opacity = isFuture ? 0.5 : 1;
-
-          return (
-            <TouchableOpacity
-              style={[
-                isSelected ? styles.selectedDayBtn : styles.dayBtn,
-                { opacity },
-              ]}
-              onPress={() => this.onDayPress(date)}
-              key={date.format('YYYY-MM-DD')}
-              disabled={moment().isBefore(date, 'day')}
-            >
-              <Text style={styles.dayText}>
-                {date.format('D')}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    ));
-  }
-
   render() {
     const {
-      style, hideArrows, firstDayOfWeek, renderArrow, hideDayNames,
+      style, hideArrows, firstDayOfWeek, renderArrow, hideDayNames, onDayPress,
+      selectedDate,
     } = this.props;
+    const { monthDate } = this.state;
+    const days = _.chunk(dateHelper.page(monthDate), 7);
 
     return (
       <View style={[styles.container, style]}>
@@ -117,7 +68,14 @@ export default class Calendar extends React.Component<Props, State> {
           hideDayNames={hideDayNames}
         />
 
-        {this.renderCalendar()}
+        {days.map(weekDays => (
+          <Week
+            weekDays={weekDays}
+            selectedDate={moment(selectedDate)}
+            onDayPress={onDayPress}
+            key={`${Math.random() * 10000000}`}
+          />
+        ))}
       </View>
     );
   }
@@ -129,47 +87,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 16,
     backgroundColor: colors.main,
-  },
-
-  weekContInDayMode: {
-    flexDirection: 'row',
-    height: 38,
-    marginBottom: 4,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-
-  dayText: {
-    width: 20,
-    fontSize: 16,
-    color: colors.white,
-    textAlign: 'center',
-  },
-
-  dayBtn: {
-    height: 38,
-    width: 38,
-    borderRadius: 18,
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.main,
-  },
-
-  selectedDayBtn: {
-    height: 38,
-    width: 38,
-    borderRadius: 19,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: colors.mainDark,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    backgroundColor: colors.mainDark,
   },
 });

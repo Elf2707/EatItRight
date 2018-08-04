@@ -64,11 +64,9 @@ export default class DayFoodList extends React.Component<Props, State> {
     this.state.animValue.removeAllListeners();
   }
 
-  onDayChange = (day: Date) => {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({ currentDay: day });
-    });
-  };
+  onDayChange = (day: Date) => requestAnimationFrame(
+    () => this.setState({ currentDay: day })
+  );
 
   onLayout = ({ nativeEvent }: OnLayoutEvent) => {
     if (!this.state.isLayoutDone) {
@@ -134,6 +132,7 @@ export default class DayFoodList extends React.Component<Props, State> {
   }
 
   renderCalendar() {
+    const { foodsStore } = this.props;
     const { animValue, calendarHeight } = this.state;
 
     const opacity = animValue.interpolate({
@@ -147,7 +146,10 @@ export default class DayFoodList extends React.Component<Props, State> {
         style={{ opacity }}
         onLayout={this.onLayout}
       >
-        <Calendar onDayPress={this.onDayChange} />
+        <Calendar
+          onDayPress={date => foodsStore.setSelectedDate(date)}
+          selectedDate={foodsStore.selectedDate}
+        />
       </Animated.View>
     );
   }

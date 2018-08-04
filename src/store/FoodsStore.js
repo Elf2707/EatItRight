@@ -5,6 +5,7 @@ import data from '../data';
 export default class FoodsStore {
   @observable allFoods: Array<FoodItemData> = [];
   @observable dayFoods: Array<DayFoodItemData> = [];
+  @observable selectedDate: Date = new Date();
 
   store: MainStoreData;
 
@@ -25,5 +26,10 @@ export default class FoodsStore {
   @action
   addNewDayFoodItem(item: DayFoodItemData) {
     this.dayFoods = this.dayFoods.concat(item);
+  }
+
+  @action
+  setSelectedDate(date: Date) {
+    this.selectedDate = date;
   }
 }
