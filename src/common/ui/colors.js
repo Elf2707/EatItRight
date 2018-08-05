@@ -6,10 +6,10 @@ export default {
   mainLight: '#FF79B0',
   mainText: '#000000',
   subText: '#B0B0B0',
-  protein: '#F50057',
-  fat: '#FF3D00',
-  carbohydrate: '#73B600',
-  weight: '#1E88E5',
+  protein: '#C60055',
+  fat: '#E87316',
+  carbohydrate: '#33B7FF',
+  weight: '#6F2FE8',
 
   // White palette
   white: '#FFFFFF',
@@ -20,4 +20,16 @@ export default {
   // Gray palette
   gray1: '#eeeeee',
   gray2: '#BBBBBB',
+
+  // Yellow palette
+  yellow1: '#FFEA67',
+
+  // Blue palette
+  blue1: '#33B7FF',
+
+  // Orange palette
+  orange1: '#E87316',
+
+  // Magenta palette
+  magenta1: '#6F2FE8',
 };

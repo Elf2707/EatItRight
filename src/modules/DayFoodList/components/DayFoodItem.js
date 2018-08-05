@@ -80,7 +80,8 @@ const styles = StyleSheet.create({
   itemInfoCont: {
     flex: 1,
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingLeft: 20,
+    paddingRight: 16,
   },
 
   nameText: {

@@ -102,7 +102,8 @@ export default class DayFoodList extends React.Component<Props, State> {
   };
 
   renderShortHeader() {
-    const { animValue, calendarHeight, currentDay } = this.state;
+    const { foodsStore } = this.props;
+    const { animValue, calendarHeight } = this.state;
 
     const opacity = animValue.interpolate({
       inputRange: [0, calendarHeight - MIN_HEADER_H],
@@ -124,9 +125,9 @@ export default class DayFoodList extends React.Component<Props, State> {
             { transform: [{ translateY }] },
           ]}
         >
-          {moment(currentDay).format('DD MMMM YYYY')}
+          {moment(foodsStore.selectedDate).format('DD MMMM YYYY')}
         </Animated.Text>
-        <Total dayFoods={this.props.foodsStore.dayFoods} />
+        <Total dayFoods={foodsStore.dayFoods} />
       </Animated.View>
     );
   }

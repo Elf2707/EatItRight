@@ -10,6 +10,7 @@ import { colors } from '../../../common/ui';
 import images from '../../../common/assets/images';
 
 const Screen = Dimensions.get('window');
+const BUTTON_W = 70;
 
 type Props = {
   style?: Object,
@@ -28,7 +29,7 @@ export default class FoodItem extends React.Component<Props, State> {
     animValue: new Animated.Value(0),
   };
 
-  onAddFoodItemPress = () => {
+  onAddFoodItem = () => {
     this.interactableElem.snapTo({ index: 0 });
     Navigation.push(this.props.componentId, {
       component: {
@@ -41,38 +42,121 @@ export default class FoodItem extends React.Component<Props, State> {
     });
   };
 
-  renderButtons() {
+  onEditItem = () => {
+    this.interactableElem.snapTo({ index: 0 });
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: 'screens.EditFoodItem',
+        passProps: {
+          item: this.props.item,
+          isEditMode: true,
+        },
+      },
+    });
+  };
+
+  renderAteButton() {
     const { animValue } = this.state;
     const translateX = animValue.interpolate({
-      inputRange: [-70, 0],
-      outputRange: [0, 70],
+      inputRange: [-BUTTON_W * 3, 0],
+      outputRange: [0, BUTTON_W * 3],
     });
 
     const scale = animValue.interpolate({
-      inputRange: [-70, 0],
+      inputRange: [-BUTTON_W * 3, 0],
       outputRange: [1, 0.2],
       extrapolate: 'clamp',
     });
 
     return (
+      <Animated.View
+        style={[styles.ateBtnCont, { transform: [{ translateX }] }]}
+      >
+        <TouchableOpacity
+          style={styles.btnIcon}
+          onPress={this.onAddFoodItem}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+        >
+          <Animated.Image
+            style={[styles.btnIcon, { transform: [{ scale }] }]}
+            source={images.addFoodIcon}
+          />
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  }
+
+  renderEditButton() {
+    const { animValue } = this.state;
+    const translateX = animValue.interpolate({
+      inputRange: [-BUTTON_W * 3, 0],
+      outputRange: [0, BUTTON_W * 2],
+    });
+
+    const scale = animValue.interpolate({
+      inputRange: [-BUTTON_W * 3, 0],
+      outputRange: [1, 0.2],
+      extrapolate: 'clamp',
+    });
+
+    return (
+      <Animated.View
+        style={[styles.editBtnCont, { transform: [{ translateX }] }]}
+      >
+        <TouchableOpacity
+          style={styles.btnIcon}
+          onPress={this.onEditItem}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+        >
+          <Animated.Image
+            style={[styles.btnIcon, { transform: [{ scale }] }]}
+            source={images.editIcon}
+          />
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  }
+
+  renderDeleteButton() {
+    const { animValue } = this.state;
+    const translateX = animValue.interpolate({
+      inputRange: [-BUTTON_W * 3, 0],
+      outputRange: [0, BUTTON_W],
+    });
+
+    const scale = animValue.interpolate({
+      inputRange: [-BUTTON_W * 3, 0],
+      outputRange: [1, 0.2],
+      extrapolate: 'clamp',
+    });
+
+    return (
+      <Animated.View
+        style={[styles.deleteBtnCont, { transform: [{ translateX }] }]}
+      >
+        <TouchableOpacity
+          style={styles.btnIcon}
+          onPress={() => {}}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+        >
+          <Animated.Image
+            style={[styles.btnIcon, { transform: [{ scale }] }]}
+            source={images.deleteIcon}
+          />
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  }
+
+  renderButtons() {
+    return (
       <View
-        style={styles.btnCont}
+        style={styles.btnsCont}
         pointerEvents="box-none"
       >
-        <Animated.View
-          style={[
-            styles.animBtnCont,
-            { transform: [{ translateX }, { scale }] },
-          ]}
-        >
-          <TouchableOpacity
-            style={styles.btnIcon}
-            onPress={this.onAddFoodItemPress}
-            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-          >
-            <Image style={styles.btnIcon} source={images.addFoodIcon} />
-          </TouchableOpacity>
-        </Animated.View>
+        {this.renderAteButton()}
+        {this.renderEditButton()}
+        {this.renderDeleteButton()}
       </View>
     );
   }
@@ -120,12 +204,9 @@ export default class FoodItem extends React.Component<Props, State> {
           horizontalOnly
           snapPoints={[
             { x: 0, damping: 0.6, tension: 300 },
-            { x: -70, damping: 0.6, tension: 300 },
+            { x: -BUTTON_W * 3, damping: 0.6, tension: 300 },
           ]}
           boundaries={{ right: 0 }}
-          onSnap={this.onSnap}
-          onDrag={this.onDrag}
-          onStop={this.onStopMoving}
           dragToss={0.01}
           animatedValueX={this.state.animValue}
         >
@@ -170,22 +251,44 @@ const styles = StyleSheet.create({
     color: colors.subText,
   },
 
-  animBtnCont: {
-    position: 'absolute',
-    top: 0,
-    left: Screen.width - 70,
-    width: Screen.width,
-    height: '100%',
-    paddingLeft: 16,
-    justifyContent: 'center',
-    backgroundColor: colors.mainDark,
-  },
-
-  btnCont: {
+  btnsCont: {
     position: 'absolute',
     right: 0,
     left: 0,
     height: '100%',
+    backgroundColor: colors.blue1,
+  },
+
+  ateBtnCont: {
+    position: 'absolute',
+    top: 0,
+    left: Screen.width - (BUTTON_W * 3),
+    width: Screen.width,
+    height: '100%',
+    paddingLeft: 16,
+    justifyContent: 'center',
+    backgroundColor: colors.blue1,
+  },
+
+  editBtnCont: {
+    position: 'absolute',
+    top: 0,
+    left: Screen.width - (BUTTON_W * 2),
+    width: Screen.width,
+    height: '100%',
+    paddingLeft: 16,
+    justifyContent: 'center',
+    backgroundColor: colors.magenta1,
+  },
+
+  deleteBtnCont: {
+    position: 'absolute',
+    top: 0,
+    left: Screen.width - BUTTON_W,
+    width: Screen.width,
+    height: '100%',
+    paddingLeft: 16,
+    justifyContent: 'center',
     backgroundColor: colors.mainDark,
   },
 

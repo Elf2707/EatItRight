@@ -143,7 +143,7 @@ export default class EditFoodItem extends React.Component<Props, State> {
           label="Protein"
           borderColor={colors.protein}
           value={protein}
-          editable={!isEditMode}
+          editable={isEditMode}
           selectionColor={colors.white}
           onFocus={this.onFocus}
           onChangeText={text => this.setState({ protein: text })}
@@ -156,7 +156,7 @@ export default class EditFoodItem extends React.Component<Props, State> {
           label="Fat"
           borderColor={colors.fat}
           value={fat}
-          editable={!isEditMode}
+          editable={isEditMode}
           selectionColor={colors.white}
           onFocus={this.onFocus}
           onChangeText={text => this.setState({ fat: text })}
@@ -168,7 +168,7 @@ export default class EditFoodItem extends React.Component<Props, State> {
           label="Carbohydrate"
           borderColor={colors.carbohydrate}
           value={carbohydrate}
-          editable={!isEditMode}
+          editable={isEditMode}
           selectionColor={colors.white}
           onFocus={this.onFocus}
           onChangeText={text => this.setState({ carbohydrate: text })}
@@ -204,7 +204,9 @@ export default class EditFoodItem extends React.Component<Props, State> {
             color={colors.white}
             onPress={this.onAddPress}
           >
-            <Text style={styles.btnText}>Add</Text>
+            <Text style={styles.btnText}>
+              {this.props.isEditMode ? 'Save' : 'Add'}
+            </Text>
           </TouchableOpacity>
 
           <Animated.View
