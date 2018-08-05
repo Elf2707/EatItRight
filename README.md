@@ -24,7 +24,7 @@
 
 5. Install local dependence:
     ```
-    npm install
+    yarn install
     ```
 6. Start the application
     ```
@@ -48,6 +48,6 @@
 
 ### Increase version:
 
-    npm run bump
+    yarn bump
 
 ### Release publishing
