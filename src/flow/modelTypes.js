@@ -8,6 +8,7 @@ export type FoodItemData = {
 };
 
 export type DayFoodItemData = {
+  id: number,
   name: string,
   added_at: string,
   weight: number,

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import {
-  Animated, StyleSheet, View, ScrollView, Dimensions, InteractionManager,
+  Animated, StyleSheet, View, ScrollView, Dimensions,
 } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import Interactable from 'react-native-interactable';
@@ -18,14 +18,13 @@ const TOP_SCROLL_POS = 220;
 
 type Props = {
   foodsStore: FoodsStoreData,
-  navigator: Navigator,
-}
+  componentId: string,
+};
 
 type State = {
   animValue: Animated.Value,
   calendarHeight: number,
   isLayoutDone: boolean,
-  currentDay: Date,
 };
 
 @inject('foodsStore')
@@ -47,7 +46,6 @@ export default class DayFoodList extends React.Component<Props, State> {
     animValue: new Animated.Value(400),
     calendarHeight: 400,
     isLayoutDone: false,
-    currentDay: new Date(),
   };
 
   componentDidMount() {
@@ -63,10 +61,6 @@ export default class DayFoodList extends React.Component<Props, State> {
   componentWillUnmount() {
     this.state.animValue.removeAllListeners();
   }
-
-  onDayChange = (day: Date) => requestAnimationFrame(
-    () => this.setState({ currentDay: day })
-  );
 
   onLayout = ({ nativeEvent }: OnLayoutEvent) => {
     if (!this.state.isLayoutDone) {
@@ -156,7 +150,7 @@ export default class DayFoodList extends React.Component<Props, State> {
   }
 
   render() {
-    const { foodsStore } = this.props;
+    const { componentId, foodsStore } = this.props;
     const height = SCREEN_H - (MIN_HEADER_H
       + (foodsStore.dayFoods.length * 80));
 
@@ -174,7 +168,12 @@ export default class DayFoodList extends React.Component<Props, State> {
           {this.renderCalendar()}
 
           {foodsStore.dayFoods.map(item => (
-            <DayFoodItem key={`${Math.random() * 10000000}`} item={item} />
+            <DayFoodItem
+              componentId={componentId}
+              item={item}
+              deleteDayFoodItem={() => foodsStore.deleteDayFoodItem(item.id)}
+              key={`${Math.random() * 10000000}`}
+            />
           ))}
 
           <View style={[styles.emptyView, { height }]} />

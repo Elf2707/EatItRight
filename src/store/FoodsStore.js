@@ -32,4 +32,14 @@ export default class FoodsStore {
   setSelectedDate(date: Date) {
     this.selectedDate = date;
   }
+
+  @action
+  deleteFoodItem(id: number) {
+    this.allFoods = this.allFoods.filter(i => i.id !== id);
+  }
+
+  @action
+  deleteDayFoodItem(id: number) {
+    this.dayFoods = this.dayFoods.filter(i => i.id !== id);
+  }
 }

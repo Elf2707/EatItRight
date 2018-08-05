@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
 import {
-  Animated, View, Text, StyleSheet, TouchableOpacity, Image, Dimensions,
+  Animated, View, Text, StyleSheet, TouchableOpacity, Dimensions,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Interactable from 'react-native-interactable';
 
-import { colors } from '../../../common/ui';
+import { colors, FoodIngredient } from '../../../common/ui';
 import images from '../../../common/assets/images';
 
 const Screen = Dimensions.get('window');
@@ -16,6 +16,7 @@ type Props = {
   style?: Object,
   item: FoodItemData,
   componentId: string,
+  deleteFoodItem: () => void,
 };
 
 type State = {
@@ -34,10 +35,7 @@ export default class FoodItem extends React.Component<Props, State> {
     Navigation.push(this.props.componentId, {
       component: {
         name: 'screens.EditFoodItem',
-        passProps: {
-          item: this.props.item,
-          isEditMode: false,
-        },
+        passProps: { item: this.props.item },
       },
     });
   };
@@ -49,7 +47,7 @@ export default class FoodItem extends React.Component<Props, State> {
         name: 'screens.EditFoodItem',
         passProps: {
           item: this.props.item,
-          isEditMode: true,
+          isEditFoodItemMode: true,
         },
       },
     });
@@ -136,7 +134,7 @@ export default class FoodItem extends React.Component<Props, State> {
       >
         <TouchableOpacity
           style={styles.btnIcon}
-          onPress={() => {}}
+          onPress={() => this.props.deleteFoodItem()}
           hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
         >
           <Animated.Image
@@ -174,18 +172,23 @@ export default class FoodItem extends React.Component<Props, State> {
         </Text>
 
         <View style={styles.itemParamsCont}>
-          <Text style={styles.itemParamsText}>
-            <Text style={styles.itemParamsHeaderText}>P: </Text>
-            {item.protein}
-          </Text>
-          <Text style={styles.itemParamsText}>
-            <Text style={styles.itemParamsHeaderText}>F: </Text>
-            {item.fat}
-          </Text>
-          <Text style={styles.itemParamsText}>
-            <Text style={styles.itemParamsHeaderText}>C: </Text>
-            {item.carbohydrate}
-          </Text>
+          <FoodIngredient
+            style={styles.ingredient}
+            backgroundColor={colors.protein}
+            text={`P: ${item.protein}`}
+          />
+
+          <FoodIngredient
+            style={styles.ingredient}
+            backgroundColor={colors.fat}
+            text={`F: ${item.fat}`}
+          />
+
+          <FoodIngredient
+            style={styles.ingredient}
+            backgroundColor={colors.carbohydrate}
+            text={`C: ${item.carbohydrate}`}
+          />
         </View>
       </View>
     );
@@ -240,15 +243,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 
-  itemParamsText: {
-    fontSize: 16,
-    color: colors.mainText,
-    marginRight: 20,
-  },
-
-  itemParamsHeaderText: {
-    fontSize: 16,
-    color: colors.subText,
+  ingredient: {
+    marginRight: 10,
   },
 
   btnsCont: {

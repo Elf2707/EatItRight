@@ -19,12 +19,17 @@ export default class FoodsList extends React.Component<Props> {
   }
 
   // eslint-disable-next-line react/no-unused-prop-types
-  renderItem = ({ item }: { item: FoodItemData }) => (
-    <FoodItem
-      componentId={this.props.componentId}
-      item={item}
-    />
-  );
+  renderItem = ({ item }: { item: FoodItemData }) => {
+    const { componentId, foodsStore } = this.props;
+
+    return (
+      <FoodItem
+        componentId={componentId}
+        item={item}
+        deleteFoodItem={() => foodsStore.deleteFoodItem(item.id)}
+      />
+    );
+  };
 
   renderSeparator = () => <View style={styles.separator} />;
 

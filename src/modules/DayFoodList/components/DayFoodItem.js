@@ -1,24 +1,130 @@
 // @flow
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  Animated, View, Text, TouchableOpacity, StyleSheet, Dimensions,
+} from 'react-native';
+import { Navigation } from 'react-native-navigation';
+import Interactable from 'react-native-interactable';
 import moment from 'moment';
 
 import { colors, FoodIngredient } from '../../../common/ui';
+import images from '../../../common/assets/images';
+
+const Screen = Dimensions.get('window');
+const BUTTON_W = 70;
 
 type Props = {
+  style?: Object,
   item: DayFoodItemData,
+  componentId: string,
+  deleteDayFoodItem: () => void,
 };
 
-export default class DayFoodItem extends React.Component<Props> {
-  onDeleteItem = () => {
-    console.log('on delete item ---  0000');
+type State = {
+  animValue: Animated.Value,
+};
+
+export default class DayFoodItem extends React.Component<Props, State> {
+  interactableElem: Interactable;
+
+  state = {
+    animValue: new Animated.Value(0),
+  };
+
+  onDeleteItem = () => {};
+
+  onEditItem = () => {
+    this.interactableElem.snapTo({ index: 0 });
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: 'screens.EditFoodItem',
+        passProps: {
+          item: this.props.item,
+          isEditDayItemMode: true,
+        },
+      },
+    });
+  };
+
+  renderEditButton() {
+    const { animValue } = this.state;
+    const translateX = animValue.interpolate({
+      inputRange: [-BUTTON_W * 2, 0],
+      outputRange: [0, BUTTON_W * 1],
+    });
+
+    const scale = animValue.interpolate({
+      inputRange: [-BUTTON_W * 2, 0],
+      outputRange: [1, 0.2],
+      extrapolate: 'clamp',
+    });
+
+    return (
+      <Animated.View
+        style={[styles.editBtnCont, { transform: [{ translateX }] }]}
+      >
+        <TouchableOpacity
+          style={styles.btnIcon}
+          onPress={this.onEditItem}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+        >
+          <Animated.Image
+            style={[styles.btnIcon, { transform: [{ scale }] }]}
+            source={images.editIcon}
+          />
+        </TouchableOpacity>
+      </Animated.View>
+    );
   }
 
-  render() {
+  renderDeleteButton() {
+    const { animValue } = this.state;
+    const translateX = animValue.interpolate({
+      inputRange: [-BUTTON_W * 2, 0],
+      outputRange: [0, BUTTON_W],
+    });
+
+    const scale = animValue.interpolate({
+      inputRange: [-BUTTON_W * 2, 0],
+      outputRange: [1, 0.2],
+      extrapolate: 'clamp',
+    });
+
+    return (
+      <Animated.View
+        style={[styles.deleteBtnCont, { transform: [{ translateX }] }]}
+      >
+        <TouchableOpacity
+          style={styles.btnIcon}
+          onPress={this.props.deleteDayFoodItem}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+        >
+          <Animated.Image
+            style={[styles.btnIcon, { transform: [{ scale }] }]}
+            source={images.deleteIcon}
+          />
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  }
+
+  renderButtons() {
+    return (
+      <View
+        style={styles.btnsCont}
+        pointerEvents="box-none"
+      >
+        {this.renderEditButton()}
+        {this.renderDeleteButton()}
+      </View>
+    );
+  }
+
+  renderContent() {
     const { item } = this.props;
 
     return (
-      <View style={styles.container}>
+      <View style={styles.content}>
         <Text style={styles.timeText}>
           {moment(item.added_at).format('HH:mm')}
         </Text>
@@ -51,8 +157,33 @@ export default class DayFoodItem extends React.Component<Props> {
           </View>
         </View>
         <Text style={styles.weightText}>
-          {item.weight}
+          {`${item.weight}г`}
         </Text>
+      </View>
+    );
+  }
+
+  render() {
+    const { style } = this.props;
+
+    return (
+      <View style={[styles.container, style]}>
+        {this.renderButtons()}
+
+        <Interactable.View
+          // eslint-disable-next-line no-return-assign
+          ref={r => this.interactableElem = r}
+          horizontalOnly
+          snapPoints={[
+            { x: 0, damping: 0.6, tension: 300 },
+            { x: -BUTTON_W * 2, damping: 0.6, tension: 300 },
+          ]}
+          boundaries={{ right: 0 }}
+          dragToss={0.01}
+          animatedValueX={this.state.animValue}
+        >
+          {this.renderContent()}
+        </Interactable.View>
       </View>
     );
   }
@@ -60,14 +191,17 @@ export default class DayFoodItem extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    width: '100%',
-    alignItems: 'center',
     height: 80,
-    borderBottomWidth: 1,
     borderBottomColor: colors.gray1,
-    backgroundColor: colors.white,
+    borderBottomWidth: 1,
+  },
+
+  content: {
+    height: '100%',
+    flexDirection: 'row',
     paddingHorizontal: 20,
+    alignItems: 'center',
+    backgroundColor: colors.white,
   },
 
   timeText: {
@@ -102,5 +236,41 @@ const styles = StyleSheet.create({
   weightText: {
     fontSize: 18,
     color: colors.mainText,
+  },
+
+  btnsCont: {
+    position: 'absolute',
+    right: 0,
+    left: 0,
+    height: '100%',
+    backgroundColor: colors.magenta1,
+    overflow: 'hidden',
+  },
+
+  editBtnCont: {
+    position: 'absolute',
+    top: 0,
+    left: Screen.width - (BUTTON_W * 2),
+    width: Screen.width,
+    height: '100%',
+    paddingLeft: 16,
+    justifyContent: 'center',
+    backgroundColor: colors.magenta1,
+  },
+
+  deleteBtnCont: {
+    position: 'absolute',
+    top: 0,
+    left: Screen.width - BUTTON_W,
+    width: Screen.width,
+    height: '100%',
+    paddingLeft: 16,
+    justifyContent: 'center',
+    backgroundColor: colors.mainDark,
+  },
+
+  btnIcon: {
+    width: 40,
+    height: 40,
   },
 });
