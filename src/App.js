@@ -20,6 +20,9 @@ Navigation.events().registerAppLaunchedListener(() => {
                   options: {
                     topBar: {
                       visible: false,
+                      title: {
+                        text: 'За день',
+                      },
                     },
                     bottomTab: {
                       text: 'Дневной список',
@@ -30,12 +33,8 @@ Navigation.events().registerAppLaunchedListener(() => {
                       icon: images.dayFoodIcon,
                       testID: 'DAY_FOOD_TAB_BAR_BUTTON',
                     },
-                    bottomTabs: {
-                      backgroundColor: colors.main,
-                    },
-                    backButton: {
-                      color: colors.white,
-                    },
+                    bottomTabs: { backgroundColor: colors.main },
+                    backButton: { color: colors.white },
                     buttonColor: colors.white,
                   },
                 },
@@ -50,9 +49,7 @@ Navigation.events().registerAppLaunchedListener(() => {
                   options: {
                     topBar: {
                       visible: true,
-                      background: {
-                        color: colors.main,
-                      },
+                      background: { color: colors.main },
                       title: {
                         text: 'Продукты',
                         fontSize: 20,
@@ -60,9 +57,7 @@ Navigation.events().registerAppLaunchedListener(() => {
                       },
                       searchBar: true,
                       searchBarHiddenWhenScrolling: true,
-                      backButton: {
-                        color: colors.white,
-                      },
+                      backButton: { color: colors.white },
                       buttonColor: colors.white,
                     },
                     bottomTab: {
@@ -74,9 +69,7 @@ Navigation.events().registerAppLaunchedListener(() => {
                       selectedIconColor: colors.white,
                       testID: 'FOOD_LIST_TAB_BAR_BUTTON',
                     },
-                    bottomTabs: {
-                      backgroundColor: colors.main,
-                    },
+                    bottomTabs: { backgroundColor: colors.main },
                   },
                 },
               }],
@@ -90,20 +83,14 @@ Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setDefaultOptions({
     topBar: {
       visible: true,
-      background: {
-        color: colors.main,
-      },
+      background: { color: colors.main },
       title: {
         fontSize: 20,
         color: colors.white,
       },
-      backButton: {
-        color: colors.white,
-      },
+      backButton: { color: colors.white },
       buttonColor: colors.white,
     },
-    bottomTabs: {
-      backgroundColor: colors.main,
-    },
+    bottomTabs: { backgroundColor: colors.main },
   });
 });

@@ -12,7 +12,7 @@ import DayFoodItem from './components/DayFoodItem';
 import Total from './components/Total';
 
 const SCREEN_H = Dimensions.get('window').height;
-const SCROLL_THRESHOLD = 120;
+const SCROLL_THRESHOLD = 100;
 const MIN_HEADER_H = 110;
 const TOP_SCROLL_POS = 220;
 

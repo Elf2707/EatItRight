@@ -62,6 +62,7 @@ export default class EditFoodItem extends React.Component<Props, State> {
     Navigation.mergeOptions(this.props.componentId, {
       topBar: { title: { text: titleText } },
     });
+
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       this.onKeyboardDidShow
