@@ -7,4 +7,5 @@ export default {
   addFoodIcon: require('./icons/add_food.png'),
   editIcon: require('./icons/edit_icon.png'),
   deleteIcon: require('./icons/trash_icon.png'),
+  settingsIcon: require('./icons/settings_icon.png'),
 };

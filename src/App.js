@@ -75,6 +75,38 @@ Navigation.events().registerAppLaunchedListener(() => {
               }],
             },
           },
+          {
+            stack: {
+              children: [{
+                component: {
+                  name: 'screens.Settings',
+                  options: {
+                    topBar: {
+                      visible: true,
+                      background: { color: colors.main },
+                      title: {
+                        text: 'Настройки',
+                        fontSize: 20,
+                        color: colors.white,
+                      },
+                      backButton: { color: colors.white },
+                      buttonColor: colors.white,
+                    },
+                    bottomTab: {
+                      text: 'Настройки',
+                      icon: images.settingsIcon,
+                      textColor: colors.mainDark,
+                      iconColor: colors.mainDark,
+                      selectedTextColor: colors.white,
+                      selectedIconColor: colors.white,
+                      testID: 'SETTINGS_TAB_BAR_BUTTON',
+                    },
+                    bottomTabs: { backgroundColor: colors.main },
+                  },
+                },
+              }],
+            },
+          },
         ],
       },
     },
@@ -83,6 +115,7 @@ Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setDefaultOptions({
     topBar: {
       visible: true,
+      drawBehind: false,
       background: { color: colors.main },
       title: {
         fontSize: 20,

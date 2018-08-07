@@ -2,6 +2,7 @@
 import React from 'react';
 import {
   Animated, StyleSheet, View, ScrollView, Dimensions,
+  InteractionManager,
 } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import Interactable from 'react-native-interactable';
@@ -95,6 +96,12 @@ export default class DayFoodList extends React.Component<Props, State> {
     }
   };
 
+  onDeleteItem = (itemId: number) => {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.foodsStore.deleteDayFoodItem(itemId);
+    });
+  }
+
   renderShortHeader() {
     const { foodsStore } = this.props;
     const { animValue, calendarHeight } = this.state;
@@ -171,7 +178,7 @@ export default class DayFoodList extends React.Component<Props, State> {
             <DayFoodItem
               componentId={componentId}
               item={item}
-              deleteDayFoodItem={() => foodsStore.deleteDayFoodItem(item.id)}
+              deleteDayFoodItem={() => this.onDeleteItem(item.id)}
               key={`${Math.random() * 10000000}`}
             />
           ))}

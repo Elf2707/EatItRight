@@ -1,11 +1,7 @@
 // @flow
 import React from 'react';
-import {
-  Animated, View, StyleSheet, Text, TouchableOpacity, ScrollView, Keyboard,
-  UIManager,
-} from 'react-native';
-import { observer, inject } from 'mobx-react/native';
-import { Navigation } from 'react-native-navigation';
+import { Animated, ScrollView, Keyboard, UIManager, View, StyleSheet } from 'react-native';
+import { inject, observer } from 'mobx-react/native';
 import { Jiro } from 'react-native-textinput-effects';
 
 import { colors } from '../../common/ui';
@@ -14,55 +10,27 @@ const INPUT_H = 80;
 const KEYBOARD_OFFSET = 70;
 
 type Props = {
-  style?: Object,
-  item: FoodItemData | DayFoodItemData,
-  isEditFoodItemMode?: boolean,
-  isEditDayItemMode?: boolean,
-  componentId: string,
+  foodsStore: FoodsStoreData,
 };
 
 type State = {
-  name: string,
-  protein: string,
-  fat: string,
-  carbohydrate: string,
-  weight: string,
   inputYPos: number,
   animValue: Animated.Value,
 };
 
 @inject('foodsStore')
 @observer
-export default class EditFoodItem extends React.Component<Props, State> {
+export default class Settings extends React.Component<Props, State> {
   keyboardDidShowListener: KeyboardEventListener;
   keyboardDidHideListener: KeyboardEventListener;
   scrollView: ScrollView;
 
-  static defaultProps = {
-    isEditFoodItemMode: false,
-    isEditDayItemMode: false,
-  };
-
   state = {
-    name: this.props.item.name,
-    protein: `${this.props.item.protein}`,
-    fat: `${this.props.item.fat}`,
-    carbohydrate: `${this.props.item.carbohydrate}`,
-    weight: this.props.isEditDayItemMode
-      ? `${this.props.item.weight}` : '',
     inputYPos: 0,
     animValue: new Animated.Value(0),
   };
 
   componentDidMount() {
-    const { item } = this.props;
-    const titleText = item.name.length >= 20
-      ? `${item.name.substr(0, 17)}...` : item.name;
-
-    Navigation.mergeOptions(this.props.componentId, {
-      topBar: { title: { text: titleText } },
-    });
-
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       this.onKeyboardDidShow
@@ -96,24 +64,6 @@ export default class EditFoodItem extends React.Component<Props, State> {
     }).start(() => this.setState({ inputYPos: 0 }));
   };
 
-  onAddPress = () => {
-    const { name, protein, fat, carbohydrate, weight } = this.state;
-    if (name === '' || protein === '' || fat === '' || carbohydrate === ''
-      || weight === '') {
-      return;
-    }
-
-    this.props.foodsStore.addNewDayFoodItem({
-      name,
-      protein,
-      fat,
-      carbohydrate,
-      weight,
-      added_at: new Date(),
-    });
-    Navigation.pop(this.props.componentId);
-  };
-
   onFocus = ({ nativeEvent }: OnFocusEvent) => {
     this.setState({ inputYPos: 0 });
     UIManager.measure(nativeEvent.target, (ox, oy, width, height, px, py) => {
@@ -122,25 +72,21 @@ export default class EditFoodItem extends React.Component<Props, State> {
   };
 
   renderInputs() {
-    const { isEditFoodItemMode, isEditDayItemMode } = this.props;
     const { name, protein, fat, carbohydrate, weight } = this.state;
 
     return (
       <View>
-        {(isEditFoodItemMode && !isEditDayItemMode) && (
-          <Jiro
-            style={styles.inputCont}
-            inputStyle={styles.input}
-            labelStyle={styles.inputLabel}
-            label="Name"
-            borderColor={colors.weight}
-            value={name}
-            selectionColor={colors.white}
-            onFocus={this.onFocus}
-            onChangeText={text => this.setState({ name: text })}
-          />
-        )}
-
+        <Jiro
+          style={styles.inputCont}
+          inputStyle={styles.input}
+          labelStyle={styles.inputLabel}
+          label="Name"
+          borderColor={colors.weight}
+          value={name}
+          selectionColor={colors.white}
+          onFocus={this.onFocus}
+          onChangeText={text => this.setState({ name: text })}
+        />
         <Jiro
           style={styles.inputCont}
           inputStyle={styles.input}
@@ -148,7 +94,6 @@ export default class EditFoodItem extends React.Component<Props, State> {
           label="Protein"
           borderColor={colors.protein}
           value={protein}
-          editable={isEditFoodItemMode}
           selectionColor={colors.white}
           onFocus={this.onFocus}
           onChangeText={text => this.setState({ protein: text })}
@@ -161,7 +106,6 @@ export default class EditFoodItem extends React.Component<Props, State> {
           label="Fat"
           borderColor={colors.fat}
           value={fat}
-          editable={isEditFoodItemMode}
           selectionColor={colors.white}
           onFocus={this.onFocus}
           onChangeText={text => this.setState({ fat: text })}
@@ -173,48 +117,35 @@ export default class EditFoodItem extends React.Component<Props, State> {
           label="Carbohydrate"
           borderColor={colors.carbohydrate}
           value={carbohydrate}
-          editable={isEditFoodItemMode}
           selectionColor={colors.white}
           onFocus={this.onFocus}
           onChangeText={text => this.setState({ carbohydrate: text })}
         />
-        {(!isEditFoodItemMode || isEditDayItemMode) && (
-          <Jiro
-            style={styles.inputCont}
-            inputStyle={styles.input}
-            labelStyle={styles.inputLabel}
-            label="Weight"
-            borderColor={colors.weight}
-            value={weight}
-            selectionColor={colors.white}
-            onFocus={this.onFocus}
-            onChangeText={text => this.setState({ weight: text })}
-          />
-        )}
+        <Jiro
+          style={styles.inputCont}
+          inputStyle={styles.input}
+          labelStyle={styles.inputLabel}
+          label="Weight"
+          borderColor={colors.weight}
+          value={weight}
+          selectionColor={colors.white}
+          onFocus={this.onFocus}
+          onChangeText={text => this.setState({ weight: text })}
+        />
       </View>
     );
   }
 
-  render() {
-    const { isEditDayItemMode, isEditFoodItemMode } = this.props;
+  renderSeparator = () => <View style={styles.separator} />;
 
+  render() {
     return (
-      <View style={[styles.container, this.props.style]}>
+      <View style={styles.container}>
         <ScrollView
           // eslint-disable-next-line no-return-assign
           ref={r => this.scrollView = r}
         >
           {this.renderInputs()}
-
-          <TouchableOpacity
-            style={styles.btn}
-            color={colors.white}
-            onPress={this.onAddPress}
-          >
-            <Text style={styles.btnText}>
-              {(isEditDayItemMode || isEditFoodItemMode) ? 'Save' : 'Add'}
-            </Text>
-          </TouchableOpacity>
 
           <Animated.View
             style={{ height: Animated.multiply(this.state.animValue, -1) }}
@@ -228,7 +159,14 @@ export default class EditFoodItem extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     paddingTop: 16,
+  },
+
+  separator: {
+    width: '100%',
+    height: 1,
+    backgroundColor: colors.gray1,
   },
 
   inputCont: {
@@ -242,21 +180,5 @@ const styles = StyleSheet.create({
 
   inputLabel: {
     fontSize: 16,
-  },
-
-  btn: {
-    backgroundColor: colors.mainDark,
-    width: 90,
-    height: 45,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 16,
-    alignSelf: 'center',
-  },
-
-  btnText: {
-    fontSize: 20,
-    color: colors.white,
   },
 });

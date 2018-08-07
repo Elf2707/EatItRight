@@ -2,6 +2,7 @@
 import React from 'react';
 import { FlatList, View, StyleSheet } from 'react-native';
 import { inject, observer } from 'mobx-react/native';
+import { Navigation } from 'react-native-navigation';
 
 import { colors } from '../../common/ui';
 import FoodItem from './components/FoodItem';
@@ -16,6 +17,11 @@ type Props = {
 export default class FoodsList extends React.Component<Props> {
   componentDidMount() {
     this.props.foodsStore.getAllFoods();
+    Navigation.events().bindComponent(this);
+  }
+
+  searchBarUpdated({ text }: { text: string }) {
+    this.props.foodsStore.setFoodItemsFilter(text);
   }
 
   // eslint-disable-next-line react/no-unused-prop-types
@@ -38,7 +44,7 @@ export default class FoodsList extends React.Component<Props> {
       <View style={styles.container}>
         <FlatList
           style={styles.list}
-          data={this.props.foodsStore.allFoods.slice()}
+          data={this.props.foodsStore.filteredFoodItems}
           renderItem={this.renderItem}
           ItemSeparatorComponent={this.renderSeparator}
           keyExtractor={() => `${Math.random() * 10000000}`}

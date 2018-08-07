@@ -16,3 +16,11 @@ export type DayFoodItemData = {
   fat: number,
   carbohydrate: number,
 };
+
+export type LifeStyleType = 'minimum'
+  | 'medium'
+  | 'hard'
+  | 'very hard'
+  | 'extremal';
+
+export type SexType = 'male' | 'female';

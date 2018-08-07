@@ -76,10 +76,14 @@ export type OnFocusEvent = {
 };
 
 export type KeyboardEventListener = {
-  remove: () => vois,
+  remove: () => void,
 };
 
 // Stores
+export type SettingsStoreData = {
+
+};
+
 export type FoodsStoreData = {
   dayFoods: Array<DayFoodItemData>,
   getAllFoods: () => void,
@@ -87,4 +91,5 @@ export type FoodsStoreData = {
 
 export type MainStoreData = {
   foodsStore: FoodsStoreData,
+  settingsStore: SettingsStoreData,
 };
