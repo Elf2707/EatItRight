@@ -30,10 +30,10 @@ const LIFE_STYLES = [
 ];
 
 export default class SettingsStore {
-  @observable weight: number = 0;
-  @observable height: number = 0;
-  @observable age: number = 0;
-  @observable waist: number = 0;
+  @observable weight: number = 80;
+  @observable height: number = 185;
+  @observable age: number = 30;
+  @observable waist: number = 80;
   @observable lifeStyle: LifeStyleType = 'minimum';
   @observable sex: SexType = 'male';
 

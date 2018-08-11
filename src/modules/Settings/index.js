@@ -1,10 +1,13 @@
 // @flow
 import React from 'react';
-import { Animated, ScrollView, Keyboard, UIManager, View, StyleSheet } from 'react-native';
+import {
+  Animated, ScrollView, Keyboard, UIManager, View, StyleSheet, Text,
+  TouchableOpacity,
+} from 'react-native';
 import { inject, observer } from 'mobx-react/native';
 import { Jiro } from 'react-native-textinput-effects';
 
-import { colors } from '../../common/ui';
+import { colors, SegmentedControl } from '../../common/ui';
 
 const INPUT_H = 80;
 const KEYBOARD_OFFSET = 70;
@@ -71,6 +74,10 @@ export default class Settings extends React.Component<Props, State> {
     });
   };
 
+  onSaveSettings = () => {
+
+  }
+
   renderInputs() {
     const { name, protein, fat, carbohydrate, weight } = this.state;
 
@@ -80,8 +87,8 @@ export default class Settings extends React.Component<Props, State> {
           style={styles.inputCont}
           inputStyle={styles.input}
           labelStyle={styles.inputLabel}
-          label="Name"
-          borderColor={colors.weight}
+          label="Вес,кг"
+          borderColor={colors.blue1}
           value={name}
           selectionColor={colors.white}
           onFocus={this.onFocus}
@@ -91,8 +98,8 @@ export default class Settings extends React.Component<Props, State> {
           style={styles.inputCont}
           inputStyle={styles.input}
           labelStyle={styles.inputLabel}
-          label="Protein"
-          borderColor={colors.protein}
+          label="Рост,см"
+          borderColor={colors.blue1}
           value={protein}
           selectionColor={colors.white}
           onFocus={this.onFocus}
@@ -103,8 +110,8 @@ export default class Settings extends React.Component<Props, State> {
           style={styles.inputCont}
           inputStyle={styles.input}
           labelStyle={styles.inputLabel}
-          label="Fat"
-          borderColor={colors.fat}
+          label="Обхват талии,см"
+          borderColor={colors.blue1}
           value={fat}
           selectionColor={colors.white}
           onFocus={this.onFocus}
@@ -114,23 +121,28 @@ export default class Settings extends React.Component<Props, State> {
           style={styles.inputCont}
           inputStyle={styles.input}
           labelStyle={styles.inputLabel}
-          label="Carbohydrate"
-          borderColor={colors.carbohydrate}
+          label="Возраст"
+          borderColor={colors.blue1}
           value={carbohydrate}
           selectionColor={colors.white}
           onFocus={this.onFocus}
           onChangeText={text => this.setState({ carbohydrate: text })}
         />
-        <Jiro
-          style={styles.inputCont}
-          inputStyle={styles.input}
-          labelStyle={styles.inputLabel}
-          label="Weight"
-          borderColor={colors.weight}
-          value={weight}
-          selectionColor={colors.white}
-          onFocus={this.onFocus}
-          onChangeText={text => this.setState({ weight: text })}
+      </View>
+    );
+  }
+
+  renderSegmentControls() {
+    return (
+      <View style={styles.segmentedCont}>
+        <SegmentedControl
+          style={styles.segmentControl}
+          values={['male', 'female']}
+          selectedIndex={0}
+        />
+        <SegmentedControl
+          values={['minimum', 'medium', 'hard', 'very hard', 'extremal']}
+          selectedIndex={0}
         />
       </View>
     );
@@ -144,7 +156,9 @@ export default class Settings extends React.Component<Props, State> {
         <ScrollView
           // eslint-disable-next-line no-return-assign
           ref={r => this.scrollView = r}
+          keyboardShouldPersistTaps="never"
         >
+          {this.renderSegmentControls()}
           {this.renderInputs()}
 
           <Animated.View
@@ -160,7 +174,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    paddingTop: 16,
+    paddingTop: 20,
   },
 
   separator: {
@@ -180,5 +194,13 @@ const styles = StyleSheet.create({
 
   inputLabel: {
     fontSize: 16,
+  },
+
+  segmentedCont: {
+    paddingHorizontal: 20,
+  },
+
+  segmentControl: {
+    marginBottom: 16,
   },
 });

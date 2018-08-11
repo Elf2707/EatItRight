@@ -91,6 +91,12 @@ Navigation.events().registerAppLaunchedListener(() => {
                       },
                       backButton: { color: colors.white },
                       buttonColor: colors.white,
+                      rightButtons: [
+                        {
+                          id: 'BTN_SAVE_ID',
+                          icon: images.saveIcon,
+                        },
+                      ],
                     },
                     bottomTab: {
                       text: 'Настройки',
