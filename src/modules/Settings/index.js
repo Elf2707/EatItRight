@@ -2,13 +2,14 @@
 import React from 'react';
 import {
   Animated, ScrollView, Keyboard, UIManager, View, StyleSheet, Text,
-  TouchableOpacity,
+  TouchableOpacity, Dimensions,
 } from 'react-native';
 import { inject, observer } from 'mobx-react/native';
 import { Jiro } from 'react-native-textinput-effects';
 
 import { colors, SegmentedControl } from '../../common/ui';
 
+const SCREEN_H = Dimensions.get('window').height;
 const INPUT_H = 80;
 const KEYBOARD_OFFSET = 70;
 
@@ -17,6 +18,12 @@ type Props = {
 };
 
 type State = {
+  sexIndex: number,
+  lifeStyleIndex: number,
+  weight: number,
+  height: number,
+  waist: number,
+  age: number,
   inputYPos: number,
   animValue: Animated.Value,
 };
@@ -29,6 +36,12 @@ export default class Settings extends React.Component<Props, State> {
   scrollView: ScrollView;
 
   state = {
+    sexIndex: 0,
+    lifeStyleIndex: 0,
+    weight: 80,
+    height: 180,
+    waist: 90,
+    age: 30,
     inputYPos: 0,
     animValue: new Animated.Value(0),
   };
@@ -51,10 +64,9 @@ export default class Settings extends React.Component<Props, State> {
 
   onKeyboardDidShow = (e: OnKeyboardEvent) => {
     const inputPos = this.state.inputYPos + INPUT_H + KEYBOARD_OFFSET;
-
     if (e.endCoordinates.screenY < inputPos) {
       Animated.timing(this.state.animValue, {
-        toValue: e.endCoordinates.screenY - inputPos,
+        toValue: e.endCoordinates.height,
         duration: 250,
       }).start(() => this.scrollView.scrollToEnd());
     }
@@ -74,12 +86,20 @@ export default class Settings extends React.Component<Props, State> {
     });
   };
 
+  onSexChange = ({ nativeEvent }: OnSegmentChange) => this.setState({
+    sexIndex: nativeEvent.selectedSegmentIndex,
+  });
+
+  onLifeStyleChange = ({ nativeEvent }: OnSegmentChange) => this.setState({
+    lifeStyleIndex: nativeEvent.selectedSegmentIndex,
+  });
+
   onSaveSettings = () => {
 
-  }
+  };
 
   renderInputs() {
-    const { name, protein, fat, carbohydrate, weight } = this.state;
+    const { weight, height, waist, age } = this.state;
 
     return (
       <View>
@@ -89,10 +109,10 @@ export default class Settings extends React.Component<Props, State> {
           labelStyle={styles.inputLabel}
           label="Вес,кг"
           borderColor={colors.blue1}
-          value={name}
+          value={`${weight}`}
           selectionColor={colors.white}
           onFocus={this.onFocus}
-          onChangeText={text => this.setState({ name: text })}
+          onChangeText={text => this.setState({ weight: +text })}
         />
         <Jiro
           style={styles.inputCont}
@@ -100,10 +120,10 @@ export default class Settings extends React.Component<Props, State> {
           labelStyle={styles.inputLabel}
           label="Рост,см"
           borderColor={colors.blue1}
-          value={protein}
+          value={`${height}`}
           selectionColor={colors.white}
           onFocus={this.onFocus}
-          onChangeText={text => this.setState({ protein: text })}
+          onChangeText={text => this.setState({ height: +text })}
         />
 
         <Jiro
@@ -112,10 +132,10 @@ export default class Settings extends React.Component<Props, State> {
           labelStyle={styles.inputLabel}
           label="Обхват талии,см"
           borderColor={colors.blue1}
-          value={fat}
+          value={`${waist}`}
           selectionColor={colors.white}
           onFocus={this.onFocus}
-          onChangeText={text => this.setState({ fat: text })}
+          onChangeText={text => this.setState({ waist: +text })}
         />
         <Jiro
           style={styles.inputCont}
@@ -123,10 +143,10 @@ export default class Settings extends React.Component<Props, State> {
           labelStyle={styles.inputLabel}
           label="Возраст"
           borderColor={colors.blue1}
-          value={carbohydrate}
+          value={`${age}`}
           selectionColor={colors.white}
           onFocus={this.onFocus}
-          onChangeText={text => this.setState({ carbohydrate: text })}
+          onChangeText={text => this.setState({ age: +text })}
         />
       </View>
     );
@@ -135,14 +155,27 @@ export default class Settings extends React.Component<Props, State> {
   renderSegmentControls() {
     return (
       <View style={styles.segmentedCont}>
+        <Text style={styles.segmentLabelText}>Пол:</Text>
         <SegmentedControl
           style={styles.segmentControl}
-          values={['male', 'female']}
-          selectedIndex={0}
+          values={['Мужчина', 'Женщина']}
+          onChange={this.onSexChange}
+          selectedIndex={this.state.sexIndex}
         />
+
+        <Text style={styles.segmentLabelText}>
+          Уровень физической нагрузки:
+        </Text>
         <SegmentedControl
-          values={['minimum', 'medium', 'hard', 'very hard', 'extremal']}
-          selectedIndex={0}
+          values={[
+            'Минимальный',
+            'Средний',
+            'Тяжелый',
+            'Очень тяжелый',
+            'Экстремальный',
+          ]}
+          onChange={this.onLifeStyleChange}
+          selectedIndex={this.state.lifeStyleIndex}
         />
       </View>
     );
@@ -154,16 +187,17 @@ export default class Settings extends React.Component<Props, State> {
     return (
       <View style={styles.container}>
         <ScrollView
+          contentContainerStyle={styles.scrollContent}
           // eslint-disable-next-line no-return-assign
           ref={r => this.scrollView = r}
+          showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="never"
+
         >
           {this.renderSegmentControls()}
           {this.renderInputs()}
 
-          <Animated.View
-            style={{ height: Animated.multiply(this.state.animValue, -1) }}
-          />
+          <Animated.View style={{ height: this.state.animValue }} />
         </ScrollView>
       </View>
     );
@@ -174,6 +208,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+  },
+
+  scrollContent: {
     paddingTop: 20,
   },
 
@@ -197,10 +234,19 @@ const styles = StyleSheet.create({
   },
 
   segmentedCont: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
+    marginBottom: 8,
   },
 
   segmentControl: {
     marginBottom: 16,
+  },
+
+  segmentLabelText: {
+    fontFamily: 'Arial',
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: colors.gray3,
+    marginBottom: 4,
   },
 });

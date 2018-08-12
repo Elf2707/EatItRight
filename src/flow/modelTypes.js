@@ -24,3 +24,12 @@ export type LifeStyleType = 'minimum'
   | 'extremal';
 
 export type SexType = 'male' | 'female';
+
+export type SettingsData = {
+  age: number,
+  height: number,
+  weight: number,
+  waist: number,
+  lifeStyle: LifeStyleType,
+  sexType: SexType,
+};

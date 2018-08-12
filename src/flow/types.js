@@ -79,6 +79,14 @@ export type KeyboardEventListener = {
   remove: () => void,
 };
 
+export type OnSegmentChange = {
+  nativeEvent: {
+    value: string,
+    selectedSegmentIndex: number,
+    target: number,
+  },
+};
+
 // Stores
 export type SettingsStoreData = {
 

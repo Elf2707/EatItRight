@@ -83,7 +83,7 @@ export default class EditFoodItem extends React.Component<Props, State> {
 
     if (e.endCoordinates.screenY < inputPos) {
       Animated.timing(this.state.animValue, {
-        toValue: e.endCoordinates.screenY - inputPos,
+        toValue: e.endCoordinates.height,
         duration: 250,
       }).start(() => this.scrollView.scrollToEnd());
     }
@@ -201,6 +201,7 @@ export default class EditFoodItem extends React.Component<Props, State> {
     return (
       <View style={[styles.container, this.props.style]}>
         <ScrollView
+          style={styles.scrollCont}
           // eslint-disable-next-line no-return-assign
           ref={r => this.scrollView = r}
         >
@@ -216,9 +217,7 @@ export default class EditFoodItem extends React.Component<Props, State> {
             </Text>
           </TouchableOpacity>
 
-          <Animated.View
-            style={{ height: Animated.multiply(this.state.animValue, -1) }}
-          />
+          <Animated.View style={{ height: this.state.animValue }} />
         </ScrollView>
       </View>
     );
@@ -228,6 +227,9 @@ export default class EditFoodItem extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+
+  scrollCont: {
     paddingTop: 16,
   },
 

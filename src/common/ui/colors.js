@@ -20,6 +20,7 @@ export default {
   // Gray palette
   gray1: '#eeeeee',
   gray2: '#BBBBBB',
+  gray3: '#6a7989',
 
   // Yellow palette
   yellow1: '#FFEA67',

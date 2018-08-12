@@ -42,4 +42,9 @@ export default class SettingsStore {
   constructor(store: MainStoreData) {
     this.store = store;
   }
+
+  @action
+  saveSetting(settings: SettingsData) {
+
+  }
 }
