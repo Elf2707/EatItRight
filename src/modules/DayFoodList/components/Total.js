@@ -64,16 +64,14 @@ const styles = StyleSheet.create({
     top: 50,
     width: '100%',
     height: 60,
-    alignItems: 'center',
     backgroundColor: colors.transparent,
   },
 
   content: {
     flexDirection: 'row',
     height: '100%',
-    width: '80%',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
 
   proteinCont: {
@@ -83,6 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 24,
   },
 
   fatCont: {
@@ -103,6 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     minWidth: 70,
+    marginLeft: 24,
   },
 
   paramText: {

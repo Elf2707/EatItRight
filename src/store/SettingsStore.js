@@ -1,5 +1,5 @@
 // @flow
-import { action, observable, computed } from 'mobx';
+import { action, observable, computed, extendObservable } from 'mobx';
 
 const LIFE_STYLES = [
   {
@@ -34,6 +34,9 @@ export default class SettingsStore {
   @observable height: number = 185;
   @observable age: number = 30;
   @observable waist: number = 80;
+  @observable protsPerc: number = 30;
+  @observable fatsPerc: number = 20;
+  @observable carbsPerc: number = 50;
   @observable lifeStyle: LifeStyleType = 'minimum';
   @observable sex: SexType = 'male';
 
@@ -45,6 +48,7 @@ export default class SettingsStore {
 
   @action
   saveSetting(settings: SettingsData) {
-
+    if (!settings) return;
+    extendObservable(this, { ...settings });
   }
 }

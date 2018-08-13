@@ -24,11 +24,14 @@ type State = {
   height: number,
   waist: number,
   age: number,
+  protsPerc: number,
+  fatsPerc: number,
+  carbsPerc: number,
   inputYPos: number,
   animValue: Animated.Value,
 };
 
-@inject('foodsStore')
+@inject('settingsStore')
 @observer
 export default class Settings extends React.Component<Props, State> {
   keyboardDidShowListener: KeyboardEventListener;
@@ -42,6 +45,9 @@ export default class Settings extends React.Component<Props, State> {
     height: 180,
     waist: 90,
     age: 30,
+    protsPerc: 30,
+    fatsPerc: 20,
+    carbsPerc: 50,
     inputYPos: 0,
     animValue: new Animated.Value(0),
   };
@@ -95,11 +101,28 @@ export default class Settings extends React.Component<Props, State> {
   });
 
   onSaveSettings = () => {
+    const {
+      weight, height, waist, age, protsPerc, fatsPerc, carbsPerc, sexIndex,
+      lifeStyleIndex,
+    } = this.state;
 
+    this.props.settingsStore.saveSettings({
+      weight,
+      height,
+      waist,
+      age,
+      protsPerc,
+      fatsPerc,
+      carbsPerc,
+      sex: sexIndex === 0 ? 'female' : 'male',
+      lifeStyle: 
+    });
   };
 
   renderInputs() {
-    const { weight, height, waist, age } = this.state;
+    const {
+      weight, height, waist, age, protsPerc, fatsPerc, carbsPerc,
+    } = this.state;
 
     return (
       <View>
@@ -147,6 +170,39 @@ export default class Settings extends React.Component<Props, State> {
           selectionColor={colors.white}
           onFocus={this.onFocus}
           onChangeText={text => this.setState({ age: +text })}
+        />
+        <Jiro
+          style={styles.inputCont}
+          inputStyle={styles.input}
+          labelStyle={styles.inputLabel}
+          label="Количество белков,%"
+          borderColor={colors.blue1}
+          value={`${protsPerc}`}
+          selectionColor={colors.white}
+          onFocus={this.onFocus}
+          onChangeText={text => this.setState({ protsPerc: +text })}
+        />
+        <Jiro
+          style={styles.inputCont}
+          inputStyle={styles.input}
+          labelStyle={styles.inputLabel}
+          label="Количество жиров,%"
+          borderColor={colors.blue1}
+          value={`${fatsPerc}`}
+          selectionColor={colors.white}
+          onFocus={this.onFocus}
+          onChangeText={text => this.setState({ fatsPerc: +text })}
+        />
+        <Jiro
+          style={styles.inputCont}
+          inputStyle={styles.input}
+          labelStyle={styles.inputLabel}
+          label="Количество углеводов,%"
+          borderColor={colors.blue1}
+          value={`${carbsPerc}`}
+          selectionColor={colors.white}
+          onFocus={this.onFocus}
+          onChangeText={text => this.setState({ carbsPerc: +text })}
         />
       </View>
     );

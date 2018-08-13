@@ -30,6 +30,9 @@ export type SettingsData = {
   height: number,
   weight: number,
   waist: number,
+  protsPerc: number,
+  fatsPerc: number,
+  carbsPerc: number,
   lifeStyle: LifeStyleType,
   sexType: SexType,
 };
