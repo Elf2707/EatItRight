@@ -8,9 +8,18 @@ import { colors } from '../../../common/ui';
 type Props = {
   style: ?Object,
   dayFoods: Array<DayFoodItemData>,
+  proteinsLimit: number,
+  fatsLimit: number,
+  carbsLimit: number,
 };
 
-export default function Total({ style, dayFoods }: Props) {
+export default function Total({
+  style,
+  dayFoods,
+  proteinsLimit,
+  fatsLimit,
+  carbsLimit,
+}: Props) {
   const initResults = {
     protein: 0,
     fat: 0,
@@ -34,19 +43,19 @@ export default function Total({ style, dayFoods }: Props) {
       <View style={[styles.content, style]}>
         <View style={styles.proteinCont}>
           <Text style={styles.paramText}>
-            {`220/${_.round(totalResults.protein, 2)}`}
+            {`${proteinsLimit}/${_.round(totalResults.protein, 2)}`}
           </Text>
         </View>
 
         <View style={styles.fatCont}>
           <Text style={styles.paramText}>
-            {`52.5/${_.round(totalResults.fat, 2)}`}
+            {`${fatsLimit}/${_.round(totalResults.fat, 2)}`}
           </Text>
         </View>
 
         <View style={styles.carbCont}>
           <Text style={styles.paramText}>
-            {`220/${_.round(totalResults.carb, 2)}`}
+            {`${carbsLimit}/${_.round(totalResults.carb, 2)}`}
           </Text>
         </View>
       </View>
@@ -81,7 +90,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 24,
+    marginRight: 12,
   },
 
   fatCont: {
@@ -102,7 +111,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     minWidth: 70,
-    marginLeft: 24,
+    marginLeft: 12,
   },
 
   paramText: {

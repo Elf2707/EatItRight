@@ -87,6 +87,11 @@ export type OnSegmentChange = {
   },
 };
 
+export type OnNavBtnPressEvent = {
+  componentId: string,
+  buttonId: string,
+};
+
 // Stores
 export type SettingsStoreData = {
 

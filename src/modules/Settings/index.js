@@ -2,19 +2,18 @@
 import React from 'react';
 import {
   Animated, ScrollView, Keyboard, UIManager, View, StyleSheet, Text,
-  TouchableOpacity, Dimensions,
 } from 'react-native';
+import { Navigation } from 'react-native-navigation';
 import { inject, observer } from 'mobx-react/native';
 import { Jiro } from 'react-native-textinput-effects';
 
 import { colors, SegmentedControl } from '../../common/ui';
 
-const SCREEN_H = Dimensions.get('window').height;
 const INPUT_H = 80;
 const KEYBOARD_OFFSET = 70;
 
 type Props = {
-  foodsStore: FoodsStoreData,
+  settingsStore: SettingsStoreData,
 };
 
 type State = {
@@ -41,13 +40,13 @@ export default class Settings extends React.Component<Props, State> {
   state = {
     sexIndex: 0,
     lifeStyleIndex: 0,
-    weight: 80,
-    height: 180,
-    waist: 90,
-    age: 30,
-    protsPerc: 30,
+    weight: 85,
+    height: 183,
+    waist: 85,
+    age: 39,
+    protsPerc: 40,
     fatsPerc: 20,
-    carbsPerc: 50,
+    carbsPerc: 40,
     inputYPos: 0,
     animValue: new Animated.Value(0),
   };
@@ -61,12 +60,19 @@ export default class Settings extends React.Component<Props, State> {
       'keyboardDidHide',
       this.onKeyboardDidHide
     );
+    Navigation.events().bindComponent(this);
   }
 
   componentWillUnmount() {
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
   }
+
+  navigationButtonPressed = ({ buttonId }: OnNavBtnPressEvent) => {
+    if (buttonId === 'BTN_SAVE_ID') {
+      this.onSaveSettings();
+    }
+  };
 
   onKeyboardDidShow = (e: OnKeyboardEvent) => {
     const inputPos = this.state.inputYPos + INPUT_H + KEYBOARD_OFFSET;
@@ -101,12 +107,13 @@ export default class Settings extends React.Component<Props, State> {
   });
 
   onSaveSettings = () => {
+    const { settingsStore } = this.props;
     const {
       weight, height, waist, age, protsPerc, fatsPerc, carbsPerc, sexIndex,
       lifeStyleIndex,
     } = this.state;
 
-    this.props.settingsStore.saveSettings({
+    settingsStore.saveSettings({
       weight,
       height,
       waist,
@@ -115,7 +122,7 @@ export default class Settings extends React.Component<Props, State> {
       fatsPerc,
       carbsPerc,
       sex: sexIndex === 0 ? 'female' : 'male',
-      lifeStyle: 
+      lifeStyle: settingsStore.lifeStyles[lifeStyleIndex],
     });
   };
 
@@ -176,7 +183,7 @@ export default class Settings extends React.Component<Props, State> {
           inputStyle={styles.input}
           labelStyle={styles.inputLabel}
           label="Количество белков,%"
-          borderColor={colors.blue1}
+          borderColor={colors.magenta1}
           value={`${protsPerc}`}
           selectionColor={colors.white}
           onFocus={this.onFocus}
@@ -187,7 +194,7 @@ export default class Settings extends React.Component<Props, State> {
           inputStyle={styles.input}
           labelStyle={styles.inputLabel}
           label="Количество жиров,%"
-          borderColor={colors.blue1}
+          borderColor={colors.magenta1}
           value={`${fatsPerc}`}
           selectionColor={colors.white}
           onFocus={this.onFocus}
@@ -198,7 +205,7 @@ export default class Settings extends React.Component<Props, State> {
           inputStyle={styles.input}
           labelStyle={styles.inputLabel}
           label="Количество углеводов,%"
-          borderColor={colors.blue1}
+          borderColor={colors.magenta1}
           value={`${carbsPerc}`}
           selectionColor={colors.white}
           onFocus={this.onFocus}

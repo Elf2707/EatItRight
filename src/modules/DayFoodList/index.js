@@ -19,6 +19,7 @@ const TOP_SCROLL_POS = 220;
 
 type Props = {
   foodsStore: FoodsStoreData,
+  settingsStore: SettingsStoreData,
   componentId: string,
 };
 
@@ -28,7 +29,7 @@ type State = {
   isLayoutDone: boolean,
 };
 
-@inject('foodsStore')
+@inject('foodsStore', 'settingsStore')
 @observer
 export default class DayFoodList extends React.Component<Props, State> {
   static get options() {
@@ -103,7 +104,7 @@ export default class DayFoodList extends React.Component<Props, State> {
   }
 
   renderShortHeader() {
-    const { foodsStore } = this.props;
+    const { foodsStore, settingsStore } = this.props;
     const { animValue, calendarHeight } = this.state;
 
     const opacity = animValue.interpolate({
@@ -128,7 +129,12 @@ export default class DayFoodList extends React.Component<Props, State> {
         >
           {moment(foodsStore.selectedDate).format('DD MMMM YYYY')}
         </Animated.Text>
-        <Total dayFoods={foodsStore.dayFoods} />
+        <Total
+          dayFoods={foodsStore.dayFoods}
+          proteinsLimit={settingsStore.proteinsLimit}
+          fatsLimit={settingsStore.fatsLimit}
+          carbsLimit={settingsStore.carbsLimit}
+        />
       </Animated.View>
     );
   }

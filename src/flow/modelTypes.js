@@ -18,9 +18,9 @@ export type DayFoodItemData = {
 };
 
 export type LifeStyleType = 'minimum'
+  | 'light'
   | 'medium'
   | 'hard'
-  | 'very hard'
   | 'extremal';
 
 export type SexType = 'male' | 'female';
@@ -33,6 +33,6 @@ export type SettingsData = {
   protsPerc: number,
   fatsPerc: number,
   carbsPerc: number,
+  sex: SexType,
   lifeStyle: LifeStyleType,
-  sexType: SexType,
 };

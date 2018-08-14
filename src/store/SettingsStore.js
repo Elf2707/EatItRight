@@ -1,33 +1,6 @@
 // @flow
-import { action, observable, computed, extendObservable } from 'mobx';
-
-const LIFE_STYLES = [
-  {
-    name: 'minimum',
-    description: 'МИНИМАЛЬНАЯ - СИДЯЧАЯ РАБОТА',
-    koef: 1.2,
-  },
-  {
-    name: 'medium',
-    description: 'СРЕДНИЙ - МНОГО ХОЖУ ИЛИ ЕЗЖУ',
-    koef: 1.275,
-  },
-  {
-    name: 'hard',
-    description: 'ПОСТОЯННАЯ ЛЕГКАЯ НАГРУЗКА',
-    koef: 1.55,
-  },
-  {
-    name: 'very hard',
-    description: 'ПОСТОЯННАЯ СРЕДНЯЯ/ТЯЖЕЛАЯ НАГРУЗКА',
-    koef: 1.725,
-  },
-  {
-    name: 'extremal',
-    description: 'ПОСТОЯННАЯ СВЕРХТЯЖЕЛАЯ НАГРУЗКА',
-    koef: 1.9,
-  },
-];
+import { action, observable, computed } from 'mobx';
+import _ from 'lodash';
 
 export default class SettingsStore {
   @observable weight: number = 80;
@@ -42,13 +15,67 @@ export default class SettingsStore {
 
   store: MainStoreData;
 
+  // eslint-disable-next-line class-methods-use-this
+  get lifeStyles(): Array<LifeStyleType> {
+    return [
+      'minimum',
+      'light',
+      'medium',
+      'hard',
+      'extremal',
+    ];
+  }
+
+  // Avarage from Maffin-Geor and Ketch-McArdle formulas
+
+  get baseCalories(): number {
+    // Maffin-Geor
+    const baseMG = (9.99 * this.weight) + (6.25 * this.height)
+      - (4.92 * this.age) + (this.sex === 'male' ? 5 : -161);
+
+    // Ketch-McArdle
+    const fatPerc = ((4.15 * (this.waist / 2.54))
+      - (0.082 * (this.weight / 0.454))
+      - (this.sex === 'male' ? 98.42 : 76.76)) / (this.weight / 0.454);
+    const baseKM = 370 + (21.6 * (this.weight - (this.weight * fatPerc / 100)));
+
+    return (baseMG + baseKM) / 2;
+  }
+
+  get calories(): number {
+    return this.baseCalories * this.getLifeStyleKoef();
+  }
+
+  @computed get proteinsLimit(): number {
+    return _.round(((this.protsPerc / 100) * this.calories) / 4, 1);
+  }
+
+  @computed get fatsLimit() {
+    return _.round(((this.fatsPerc / 100) * this.calories) / 9, 1);
+  }
+
+  @computed get carbsLimit() {
+    return _.round(((this.carbsPerc / 100) * this.calories) / 4, 1);
+  }
+
   constructor(store: MainStoreData) {
     this.store = store;
   }
 
   @action
-  saveSetting(settings: SettingsData) {
+  saveSettings(settings: SettingsData) {
     if (!settings) return;
-    extendObservable(this, { ...settings });
+    Object.assign(this, settings);
+  }
+
+  getLifeStyleKoef(): number {
+    switch (this.lifeStyle) {
+      case 'minimum': return 1.2;
+      case 'light': return 1.275;
+      case 'middle': return 1.55;
+      case 'hard': return 1.725;
+      case 'extremal': return 1.9;
+      default: return 1.2;
+    }
   }
 }
