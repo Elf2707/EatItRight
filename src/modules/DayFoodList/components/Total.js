@@ -1,9 +1,10 @@
 // @flow
 import React from 'react';
-import { View, StyleSheet, Text, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableHighlight, Dimensions } from 'react-native';
 import _ from 'lodash';
 
-import { colors } from '../../../common/ui';
+console.log(Dimensions.get('window'));
+import { colors, ExStyleSheet } from '../../../common/ui';
 
 type Props = {
   style: ?Object,
@@ -67,7 +68,7 @@ Total.defaultProps = {
   style: null,
 };
 
-const styles = StyleSheet.create({
+const styles = ExStyleSheet.create({
   container: {
     position: 'absolute',
     top: 50,
@@ -117,5 +118,8 @@ const styles = StyleSheet.create({
   paramText: {
     fontSize: 16,
     color: colors.white,
+    '@media (max-width: 320)': {
+      fontSize: 14,
+    },
   },
 });

@@ -8,6 +8,7 @@ import DayFoodList from '../modules/DayFoodList';
 import FoodsList from '../modules/FoodsList';
 import EditFoodItem from '../modules/EditFoodItem';
 import Settings from '../modules/Settings';
+import Login from '../modules/Login';
 
 function providerHOC(WrappedComponent: React.ComponentType<*>) {
   const ResultComponent = (props: any) => (
@@ -42,4 +43,6 @@ export default function registerScreens() {
     () => providerHOC(EditFoodItem));
   Navigation.registerComponent('screens.Settings',
     () => providerHOC(Settings));
+  Navigation.registerComponent('screens.Login',
+    () => providerHOC(Login));
 }
