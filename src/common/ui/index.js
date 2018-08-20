@@ -5,3 +5,4 @@ export NativeButton from './NativeButton';
 export FoodIngredient from './FoodIngredient';
 export SegmentedControl from './SegmentedControl';
 export ExStyleSheet from './ExStyleSheet';
+export SvgMorphIcon from './SvgMorphIcon';

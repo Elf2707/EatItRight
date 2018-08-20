@@ -2,7 +2,8 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import { colors } from '../../common/ui';
+import { colors, SvgMorphIcon } from '../../common/ui';
+import { svgMorphs } from '../../common/assets/svgs';
 import { launchTabsApp } from '../../routing/appLauncher';
 
 type Props = {
@@ -22,6 +23,8 @@ export default class Login extends React.Component<Props> {
         >
           <Text>Login</Text>
         </TouchableOpacity>
+        <SvgMorphIcon svgIcons={[svgMorphs.apple, svgMorphs.chickenLeg]} />
+        <SvgMorphIcon svgIcons={[svgMorphs.fish, svgMorphs.hamburger]} />
       </View>
     );
   }
