@@ -27,25 +27,34 @@ type State = {
 };
 
 export default class SvgMorph extends React.Component<Props, State> {
+  stopAnimation: boolean;
+
   state = {
     isForward: true,
     transition: Morph.Tween(
       this.props.svgIcons[0].path,
       this.props.svgIcons[1].path
     ),
-    posY: 100,
-    posX: 100,
-    moveUp: Math.random() > 0.5,
-    moveLeft: Math.random() > 0.5,
+    posY: random(0, SCREEN_H - ICON_H),
+    posX: random(0, SCREEN_W - ICON_W),
+    moveUp: random(0, 100) > 50,
+    moveLeft: random(0, 100) > 50,
   };
 
   componentDidMount() {
     this.animate(null, this.nextAnimation);
+    this.stopAnimation = false;
+  }
+
+  componentWillUnmount() {
+    this.stopAnimation = true;
   }
 
   nextAnimation = () => {
     const { svgIcons } = this.props;
     const { isForward } = this.state;
+
+    if (this.stopAnimation) return;
 
     this.setState({
       isForward: !isForward,
@@ -58,13 +67,17 @@ export default class SvgMorph extends React.Component<Props, State> {
 
   animate = (start: ?number, cb: ()=> void) => {
     requestAnimationFrame((timestamp: number) => {
+      const { transition } = this.state;
       const newStartTime = start || timestamp;
       const delta = (timestamp - newStartTime) / 1000;
+
+      if (this.stopAnimation) return;
 
       if (delta > 1) {
         cb();
       } else {
-        this.state.transition.tween(delta);
+        transition.tween(delta);
+        if (this.stopAnimation) return;
         this.setState(this.getNextIconCoords());
         this.animate(newStartTime, cb);
       }
@@ -121,6 +134,7 @@ export default class SvgMorph extends React.Component<Props, State> {
 
     const iconScale = svgIcons[!isForward ? 0 : 1].scale;
     const iconStroke = svgIcons[!isForward ? 0 : 1].stroke;
+    const iconFill = svgIcons[!isForward ? 0 : 1].fill;
     const iconStrokeW = svgIcons[!isForward ? 0 : 1].strokeWidth;
 
     return (
@@ -137,6 +151,7 @@ export default class SvgMorph extends React.Component<Props, State> {
             stroke={iconStroke}
             strokeWidth={iconStrokeW}
             scale={iconScale}
+            fill={iconFill}
           />
         </Surface>
       </View>
@@ -151,6 +166,10 @@ const styles = StyleSheet.create({
     height: ICON_H,
   },
 });
+
+function random(min: number, max: number): number {
+  return min + (Math.random() * ((max + 1) - min));
+}
 
 type SvgIconData = {
   path: string,
