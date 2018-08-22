@@ -62,6 +62,7 @@ export default class Login extends React.Component<Props> {
             borderColor={colors.blue1}
             labelStyle={styles.inputLabel}
             autoCapitalize="none"
+            selectionColor={colors.mainDark}
           />
           <Akira
             style={styles.input}
@@ -70,6 +71,7 @@ export default class Login extends React.Component<Props> {
             borderColor={colors.blue1}
             labelStyle={styles.inputLabel}
             autoCapitalize="none"
+            selectionColor={colors.mainDark}
           />
 
           {this.renderButtons()}
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
   },
 
   inputLabel: {
-    color: colors.magenta1,
+    color: colors.mainDark,
     fontSize: 16,
   },
 
