@@ -36,3 +36,7 @@ export type SettingsData = {
   sex: SexType,
   lifeStyle: LifeStyleType,
 };
+
+export type UserData = {
+  email: string,
+};

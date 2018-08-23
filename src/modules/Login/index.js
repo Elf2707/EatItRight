@@ -3,23 +3,42 @@ import React from 'react';
 import {
   View, StyleSheet, Text, TouchableOpacity, Keyboard,
 } from 'react-native';
+import { inject, observer } from 'mobx-react/native';
 import { Akira } from 'react-native-textinput-effects';
+import firebase from 'react-native-firebase';
 
 import { colors, SvgMorphIcon } from '../../common/ui';
 import { svgMorphs } from '../../common/assets/svgs';
 import { launchTabsApp } from '../../routing/appLauncher';
 
-type Props = {
+const EMAIL_VALIDATION = /.+@.+\..+/i;
 
+type Props = {
+  authStore: AuthStoreData
 };
 
-export default class Login extends React.Component<Props> {
+type State = {
+  email: string,
+  password: string,
+};
+
+@inject('authStore')
+@observer
+export default class Login extends React.Component<Props, State> {
+  state = {
+    email: '',
+    password: '',
+  };
+
   onLogin = () => {
     launchTabsApp();
   };
 
-  onCreateUser = () => {
+  onCreateUser = async () => {
+    const { email, password } = this.state;
 
+    if (!EMAIL_VALIDATION.test(email) || password.length < 3) return;
+    this.props.authStore.createUser(email, password);
   };
 
   renderButtons() {
@@ -27,7 +46,7 @@ export default class Login extends React.Component<Props> {
       <View style={styles.btnsCont}>
         <TouchableOpacity
           style={styles.btnSignUp}
-          onPress={this.onLogin}
+          onPress={this.onCreateUser}
         >
           <Text style={styles.btnSignUpText}>Sign Up</Text>
         </TouchableOpacity>
@@ -63,6 +82,7 @@ export default class Login extends React.Component<Props> {
             labelStyle={styles.inputLabel}
             autoCapitalize="none"
             selectionColor={colors.mainDark}
+            onChangeText={email => this.setState({ email })}
           />
           <Akira
             style={styles.input}
@@ -72,6 +92,7 @@ export default class Login extends React.Component<Props> {
             labelStyle={styles.inputLabel}
             autoCapitalize="none"
             selectionColor={colors.mainDark}
+            onChangeText={password => this.setState({ password })}
           />
 
           {this.renderButtons()}

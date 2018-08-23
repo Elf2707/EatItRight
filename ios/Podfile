@@ -7,6 +7,7 @@ target 'EatItRight' do
 
   # Pods for EatItRight
   pod 'Firebase/Core'
+  pod 'Firebase/Auth'
 
   target 'EatItRightTests' do
     inherit! :search_paths

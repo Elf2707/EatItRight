@@ -93,6 +93,10 @@ export type OnNavBtnPressEvent = {
 };
 
 // Stores
+export type AuthStoreData = {
+
+};
+
 export type SettingsStoreData = {
 
 };
