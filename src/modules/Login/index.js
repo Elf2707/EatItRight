@@ -7,7 +7,7 @@ import { inject, observer } from 'mobx-react/native';
 import { Akira } from 'react-native-textinput-effects';
 import firebase from 'react-native-firebase';
 
-import { colors, SvgMorphIcon } from '../../common/ui';
+import { colors, SvgMorphIcon, ErrorView } from '../../common/ui';
 import { svgMorphs } from '../../common/assets/svgs';
 import { launchTabsApp } from '../../routing/appLauncher';
 
@@ -35,11 +35,42 @@ export default class Login extends React.Component<Props, State> {
   };
 
   onCreateUser = async () => {
+    const { authStore } = this.props;
     const { email, password } = this.state;
 
-    if (!EMAIL_VALIDATION.test(email) || password.length < 3) return;
-    this.props.authStore.createUser(email, password);
+    if (!EMAIL_VALIDATION.test(email)) {
+      authStore.setError('Enter valid email address!');
+      return;
+    }
+
+    if (password.length < 6) {
+      authStore.setError('Password should be not less then 6 symbols');
+      return;
+    }
+
+    authStore.createUser(email, password);
   };
+
+  onForgotPassword = () => {
+    const { authStore } = this.props;
+    const { email } = this.state;
+
+    if (!EMAIL_VALIDATION.test(email)) {
+      authStore.setError('Enter valid email address!');
+      return;
+    }
+
+    authStore.forgotPassword(email);
+  };
+
+  renderForgotPasswordBtn = () => (
+    <TouchableOpacity
+      style={styles.btnForgot}
+      onPress={this.onForgotPassword}
+    >
+      <Text style={styles.btnForgotText}>Forgot Password?</Text>
+    </TouchableOpacity>
+  );
 
   renderButtons() {
     return (
@@ -62,6 +93,8 @@ export default class Login extends React.Component<Props, State> {
   }
 
   render() {
+    const { authStore } = this.props;
+
     return (
       <View
         style={styles.container}
@@ -74,6 +107,7 @@ export default class Login extends React.Component<Props, State> {
         <SvgMorphIcon svgIcons={[svgMorphs.lollipop, svgMorphs.croissant]} />
         <SvgMorphIcon svgIcons={[svgMorphs.desert, svgMorphs.cake]} />
 
+        {this.renderForgotPasswordBtn()}
         <View style={styles.content}>
           <Akira
             style={styles.input}
@@ -97,6 +131,14 @@ export default class Login extends React.Component<Props, State> {
 
           {this.renderButtons()}
         </View>
+
+        {authStore.error !== '' && (
+          <ErrorView
+            style={styles.errorCont}
+            message={authStore.error}
+            onClose={() => authStore.setError('')}
+          />
+        )}
       </View>
     );
   }
@@ -105,6 +147,7 @@ export default class Login extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 16,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.white,
@@ -162,5 +205,21 @@ const styles = StyleSheet.create({
   btnSignUpText: {
     fontSize: 20,
     color: colors.mainDark,
+  },
+
+  errorCont: {
+    top: '20%',
+  },
+
+  btnForgot: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+  },
+
+  btnForgotText: {
+    fontSize: 16,
+    color: colors.mainDark,
+    textDecorationLine: 'underline',
   },
 });

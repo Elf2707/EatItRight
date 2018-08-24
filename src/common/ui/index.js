@@ -6,3 +6,4 @@ export FoodIngredient from './FoodIngredient';
 export SegmentedControl from './SegmentedControl';
 export ExStyleSheet from './ExStyleSheet';
 export SvgMorphIcon from './SvgMorphIcon';
+export ErrorView from './ErrorView';
