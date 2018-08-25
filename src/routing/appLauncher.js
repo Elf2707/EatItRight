@@ -97,6 +97,12 @@ export function launchTabsApp() {
                       },
                       backButton: { color: colors.white },
                       buttonColor: colors.white,
+                      leftButtons: [
+                        {
+                          id: 'BTN_LOGOUT_ID',
+                          text: 'Выйти',
+                        },
+                      ],
                       rightButtons: [
                         {
                           id: 'BTN_SAVE_ID',

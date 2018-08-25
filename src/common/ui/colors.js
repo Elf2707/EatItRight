@@ -33,4 +33,7 @@ export default {
 
   // Magenta palette
   magenta1: '#6F2FE8',
+
+  // Green palette
+  green1: '#00C853',
 };

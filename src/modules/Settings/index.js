@@ -14,6 +14,7 @@ const KEYBOARD_OFFSET = 70;
 
 type Props = {
   settingsStore: SettingsStoreData,
+  authStore: AuthStoreData,
 };
 
 type State = {
@@ -30,7 +31,7 @@ type State = {
   animValue: Animated.Value,
 };
 
-@inject('settingsStore')
+@inject('settingsStore', 'authStore')
 @observer
 export default class Settings extends React.Component<Props, State> {
   keyboardDidShowListener: KeyboardEventListener;
@@ -71,6 +72,8 @@ export default class Settings extends React.Component<Props, State> {
   navigationButtonPressed = ({ buttonId }: OnNavBtnPressEvent) => {
     if (buttonId === 'BTN_SAVE_ID') {
       this.onSaveSettings();
+    } else if (buttonId === 'BTN_LOGOUT_ID') {
+      this.props.authStore.logout();
     }
   };
 

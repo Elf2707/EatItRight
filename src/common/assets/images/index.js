@@ -9,4 +9,5 @@ export default {
   deleteIcon: require('./icons/trash_icon.png'),
   settingsIcon: require('./icons/settings_icon.png'),
   saveIcon: require('./icons/save_icon.png'),
+  logoutIcon: require('./icons/logout.png'),
 };

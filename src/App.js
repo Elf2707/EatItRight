@@ -3,7 +3,6 @@ import { Navigation } from 'react-native-navigation';
 
 import { colors } from './common/ui';
 import registerScreens from './routing/screens';
-import { launchLoginPageApp } from './routing/appLauncher';
 
 registerScreens();
 
@@ -22,6 +21,4 @@ Navigation.events().registerAppLaunchedListener(() => {
     },
     bottomTabs: { backgroundColor: colors.main },
   });
-
-  launchLoginPageApp();
 });

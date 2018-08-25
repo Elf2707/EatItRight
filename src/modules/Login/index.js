@@ -7,7 +7,9 @@ import { inject, observer } from 'mobx-react/native';
 import { Akira } from 'react-native-textinput-effects';
 import firebase from 'react-native-firebase';
 
-import { colors, SvgMorphIcon, ErrorView } from '../../common/ui';
+import {
+  colors, SvgMorphIcon, ErrorMsgView, SuccessMsgView, Spinner,
+} from '../../common/ui';
 import { svgMorphs } from '../../common/assets/svgs';
 import { launchTabsApp } from '../../routing/appLauncher';
 
@@ -31,7 +33,20 @@ export default class Login extends React.Component<Props, State> {
   };
 
   onLogin = () => {
-    launchTabsApp();
+    const { authStore } = this.props;
+    const { email, password } = this.state;
+
+    if (!EMAIL_VALIDATION.test(email)) {
+      authStore.setErrorMsg('Enter valid email address!');
+      return;
+    }
+
+    if (password.length < 6) {
+      authStore.setErrorMsg('Wrong password!');
+      return;
+    }
+
+    authStore.login(email, password);
   };
 
   onCreateUser = async () => {
@@ -39,12 +54,12 @@ export default class Login extends React.Component<Props, State> {
     const { email, password } = this.state;
 
     if (!EMAIL_VALIDATION.test(email)) {
-      authStore.setError('Enter valid email address!');
+      authStore.setErrorMsg('Enter valid email address!');
       return;
     }
 
     if (password.length < 6) {
-      authStore.setError('Password should be not less then 6 symbols');
+      authStore.setErrorMsg('Password should be not less then 6 symbols');
       return;
     }
 
@@ -56,7 +71,7 @@ export default class Login extends React.Component<Props, State> {
     const { email } = this.state;
 
     if (!EMAIL_VALIDATION.test(email)) {
-      authStore.setError('Enter valid email address!');
+      authStore.setErrorMsg('Enter valid email address!');
       return;
     }
 
@@ -89,6 +104,30 @@ export default class Login extends React.Component<Props, State> {
           <Text style={styles.btnSignInText}>Sign In</Text>
         </TouchableOpacity>
       </View>
+    );
+  }
+
+  renderMessages() {
+    const { authStore } = this.props;
+
+    return (
+      <>
+        {authStore.errorMsg !== '' && (
+          <ErrorMsgView
+            style={styles.feedbackMsgCont}
+            message={authStore.errorMsg}
+            onClose={() => authStore.setErrorMsg('')}
+          />
+        )}
+
+        {authStore.successMsg !== '' && (
+          <SuccessMsgView
+            style={styles.feedbackMsgCont}
+            message={authStore.successMsg}
+            onClose={() => authStore.setSuccessMsg('')}
+          />
+        )}
+      </>
     );
   }
 
@@ -132,13 +171,8 @@ export default class Login extends React.Component<Props, State> {
           {this.renderButtons()}
         </View>
 
-        {authStore.error !== '' && (
-          <ErrorView
-            style={styles.errorCont}
-            message={authStore.error}
-            onClose={() => authStore.setError('')}
-          />
-        )}
+        {authStore.loading && <Spinner style={styles.spinner} />}
+        {this.renderMessages()}
       </View>
     );
   }
@@ -175,7 +209,7 @@ const styles = StyleSheet.create({
 
   btnSignIn: {
     backgroundColor: colors.mainDark,
-    width: 90,
+    width: 100,
     height: 45,
     borderRadius: 26,
     alignItems: 'center',
@@ -192,7 +226,7 @@ const styles = StyleSheet.create({
   btnSignUp: {
     borderColor: colors.mainDark,
     borderWidth: 2,
-    width: 90,
+    width: 100,
     height: 45,
     borderRadius: 26,
     alignItems: 'center',
@@ -207,7 +241,7 @@ const styles = StyleSheet.create({
     color: colors.mainDark,
   },
 
-  errorCont: {
+  feedbackMsgCont: {
     top: '20%',
   },
 
@@ -221,5 +255,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.mainDark,
     textDecorationLine: 'underline',
+  },
+
+  spinner: {
+    position: 'absolute',
+    top: '20%',
   },
 });

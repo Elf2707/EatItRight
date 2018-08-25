@@ -18,7 +18,7 @@ type State = {
   animValue: Animated.Value,
 };
 
-export default class ErrorView extends React.Component<Props, State> {
+export default class SuccessMsgView extends React.Component<Props, State> {
   showTimer: TimeoutID;
 
   state = {
@@ -76,12 +76,12 @@ const styles = ExStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 16,
-    borderColor: colors.mainLight,
+    borderColor: colors.green1,
     borderWidth: 2,
   },
 
   msgText: {
     fontSize: 16,
-    color: colors.mainLight,
+    color: colors.green1,
   },
 });
