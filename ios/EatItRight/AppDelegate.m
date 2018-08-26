@@ -20,6 +20,9 @@
   [ReactNativeNavigation bootstrap:jsCodeLocation launchOptions:launchOptions];
   [FIRApp configure];
 
+  FIRFirestore *firestore = [FIRFirestore firestore];
+  firestore.settings.timestampsInSnapshotsEnabled = true;
+
   return YES;
 }
 

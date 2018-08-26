@@ -1,8 +1,9 @@
 // @flow
 /* eslint-disable class-methods-use-this */
 import { action, observable, computed } from 'mobx';
-import firebase from 'react-native-firebase';
 import _ from 'lodash';
+
+import { settingsDbService } from '../dbServices';
 
 export default class SettingsStore {
   @observable weight: number = 80;
@@ -66,6 +67,12 @@ export default class SettingsStore {
   @action
   saveSettings(settings: SettingsData) {
     if (!settings) return;
+    this.setSettings(settings);
+    settingsDbService.save(settings);
+  }
+
+  @action
+  setSettings(settings: SettingsData) {
     Object.assign(this, settings);
   }
 

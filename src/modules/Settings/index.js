@@ -124,7 +124,7 @@ export default class Settings extends React.Component<Props, State> {
       protsPerc,
       fatsPerc,
       carbsPerc,
-      sex: sexIndex === 0 ? 'female' : 'male',
+      sex: sexIndex === 0 ? 'male' : 'female',
       lifeStyle: settingsStore.lifeStyles[lifeStyleIndex],
     });
   };

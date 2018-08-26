@@ -5,6 +5,7 @@ import firebase from 'react-native-firebase';
 import { logger } from 'react-native-logger';
 
 import { launchLoginPageApp, launchTabsApp } from '../routing/appLauncher';
+import { settingsDbService } from '../dbServices';
 
 export default class AuthStore {
   @observable loading: boolean = false;
@@ -12,13 +13,14 @@ export default class AuthStore {
   @observable successMsg: string = '';
   @observable user: ?UserData = {
     email: '',
-    refreshToken: '',
     uid: '',
   };
 
   store: MainStoreData;
 
-  constructor() {
+  constructor(store: MainStoreData) {
+    this.store = store;
+
     this.unsubscriber = firebase.auth()
       .onAuthStateChanged((user: FirebaseUserData) => {
         if (user) {
@@ -26,10 +28,10 @@ export default class AuthStore {
             this.user = {
               uid: user._user.uid,
               email: user._user.email,
-              refreshToken: user._user.refreshToken,
             };
-            this.saveUser(this.user);
           });
+
+          this.store.settingsStore.setSettings(settingsDbService.load());
           launchTabsApp();
         } else {
           launchLoginPageApp();
@@ -46,7 +48,6 @@ export default class AuthStore {
       this.user = {
         uid: user._user.uid,
         email: user._user.email,
-        refreshToken: user._user.refreshToken,
       };
 
       this.successMsg = 'User was successfully created.';
@@ -116,11 +117,11 @@ export default class AuthStore {
   }
 
   async saveUser(user: FirebaseUserData) {
-    console.log('tttttttttttt ----  0000000');
     try {
       await firebase.firestore()
         .collection('users')
-        .add(user);
+        .doc(user.uid)
+        .set(user);
     } catch (err) {
       logger.log(err);
     }
