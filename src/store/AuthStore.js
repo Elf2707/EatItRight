@@ -13,6 +13,7 @@ export default class AuthStore {
   @observable user: ?UserData = {
     email: '',
     refreshToken: '',
+    uid: '',
   };
 
   store: MainStoreData;
@@ -23,9 +24,11 @@ export default class AuthStore {
         if (user) {
           runInAction(() => {
             this.user = {
+              uid: user._user.uid,
               email: user._user.email,
               refreshToken: user._user.refreshToken,
             };
+            this.saveUser(this.user);
           });
           launchTabsApp();
         } else {
@@ -38,13 +41,16 @@ export default class AuthStore {
     this.loading = true;
 
     try {
-      const user = yield firebase.auth()
+      const { user } = yield firebase.auth()
         .createUserAndRetrieveDataWithEmailAndPassword(email, password);
       this.user = {
+        uid: user._user.uid,
         email: user._user.email,
         refreshToken: user._user.refreshToken,
       };
+
       this.successMsg = 'User was successfully created.';
+      this.saveUser(this.user);
     } catch (err) {
       this.errorMsg = err.userInfo.NSLocalizedDescription;
       logger.log(err);
@@ -107,5 +113,16 @@ export default class AuthStore {
   @action
   setSuccessMsg(successMsg: string) {
     this.successMsg = successMsg;
+  }
+
+  async saveUser(user: FirebaseUserData) {
+    console.log('tttttttttttt ----  0000000');
+    try {
+      await firebase.firestore()
+        .collection('users')
+        .add(user);
+    } catch (err) {
+      logger.log(err);
+    }
   }
 }

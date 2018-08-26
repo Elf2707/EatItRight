@@ -1,5 +1,7 @@
 // @flow
+/* eslint-disable class-methods-use-this */
 import { action, observable, computed } from 'mobx';
+import firebase from 'react-native-firebase';
 import _ from 'lodash';
 
 export default class SettingsStore {
@@ -15,7 +17,10 @@ export default class SettingsStore {
 
   store: MainStoreData;
 
-  // eslint-disable-next-line class-methods-use-this
+  constructor(store: MainStoreData) {
+    this.store = store;
+  }
+
   get lifeStyles(): Array<LifeStyleType> {
     return [
       'minimum',
@@ -56,10 +61,6 @@ export default class SettingsStore {
 
   @computed get carbsLimit() {
     return _.round(((this.carbsPerc / 100) * this.calories) / 4, 1);
-  }
-
-  constructor(store: MainStoreData) {
-    this.store = store;
   }
 
   @action
