@@ -134,6 +134,7 @@ export default class DayFoodList extends React.Component<Props, State> {
           proteinsLimit={settingsStore.proteinsLimit}
           fatsLimit={settingsStore.fatsLimit}
           carbsLimit={settingsStore.carbsLimit}
+          caloriesLimit={settingsStore.calories}
         />
       </Animated.View>
     );

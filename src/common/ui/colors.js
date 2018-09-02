@@ -4,7 +4,7 @@ export default {
   main: '#FF4081',
   mainDark: '#C60055',
   mainLight: '#FF79B0',
-  mainText: '#000000',
+  mainText: '#2A2A2A',
   subText: '#B0B0B0',
   protein: '#C60055',
   fat: '#E87316',
@@ -36,4 +36,7 @@ export default {
 
   // Green palette
   green1: '#00C853',
+
+  // Red palette
+  red: '#FF0000',
 };

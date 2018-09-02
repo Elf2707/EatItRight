@@ -31,7 +31,15 @@ export default class AuthStore {
             };
           });
 
-          this.store.settingsStore.setSettings(settingsDbService.load());
+          
+          settingsDbService.load()
+            .then(settings => {
+              console.log('ttttttttt ---0000');
+          console.log(settings);
+
+              store.settingsStore.setSettings(settings);
+            });
+
           launchTabsApp();
         } else {
           launchLoginPageApp();

@@ -1,9 +1,8 @@
 // @flow
 import React from 'react';
-import { View, Text, TouchableHighlight, Dimensions } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 import _ from 'lodash';
 
-console.log(Dimensions.get('window'));
 import { colors, ExStyleSheet } from '../../../common/ui';
 
 type Props = {
@@ -12,6 +11,7 @@ type Props = {
   proteinsLimit: number,
   fatsLimit: number,
   carbsLimit: number,
+  caloriesLimit: number,
 };
 
 export default function Total({
@@ -20,21 +20,29 @@ export default function Total({
   proteinsLimit,
   fatsLimit,
   carbsLimit,
+  caloriesLimit,
 }: Props) {
   const initResults = {
-    protein: 0,
-    fat: 0,
-    carb: 0,
+    proteins: 0,
+    fats: 0,
+    carbs: 0,
   };
 
   const totalResults = dayFoods.reduce((results, item) => {
     const newResults = { ...results };
-    newResults.protein += item.protein;
-    newResults.fat += item.fat;
-    newResults.carb += item.carbohydrate;
+    newResults.proteins += item.protein;
+    newResults.fats += item.fat;
+    newResults.carbs += item.carbohydrate;
 
     return newResults;
   }, initResults);
+  const calories = (totalResults.proteins * 4)
+    + (totalResults.fats * 9) + (totalResults.carbs * 4);
+
+  const isCalReached = calories >= caloriesLimit;
+  const isProteinsReached = totalResults.proteins >= proteinsLimit;
+  const isFatsReached = totalResults.fats >= fatsLimit;
+  const isCarbsReached = totalResults.carbs >= carbsLimit;
 
   return (
     <TouchableHighlight
@@ -42,21 +50,47 @@ export default function Total({
       disabled={false}
     >
       <View style={[styles.content, style]}>
+        <View style={styles.caloriesCont}>
+          <Text
+            style={[
+              styles.caloriesText,
+              { color: isCalReached ? colors.red : colors.mainText },
+            ]}
+          >
+            {`${caloriesLimit}/${_.round(calories)}`}
+          </Text>
+        </View>
+
         <View style={styles.proteinCont}>
-          <Text style={styles.paramText}>
-            {`${proteinsLimit}/${_.round(totalResults.protein, 2)}`}
+          <Text
+            style={[
+              styles.paramText,
+              { color: isProteinsReached ? colors.protein : colors.white },
+            ]}
+          >
+            {`${proteinsLimit}/${_.round(totalResults.proteins, 2)}`}
           </Text>
         </View>
 
         <View style={styles.fatCont}>
-          <Text style={styles.paramText}>
-            {`${fatsLimit}/${_.round(totalResults.fat, 2)}`}
+          <Text
+            style={[
+              styles.paramText,
+              { color: isFatsReached ? colors.red : colors.white },
+            ]}
+          >
+            {`${fatsLimit}/${_.round(totalResults.fats, 2)}`}
           </Text>
         </View>
 
         <View style={styles.carbCont}>
-          <Text style={styles.paramText}>
-            {`${carbsLimit}/${_.round(totalResults.carb, 2)}`}
+          <Text
+            style={[
+              styles.paramText,
+              { color: isCarbsReached ? colors.red : colors.white },
+            ]}
+          >
+            {`${carbsLimit}/${_.round(totalResults.carbs, 2)}`}
           </Text>
         </View>
       </View>
@@ -82,6 +116,16 @@ const styles = ExStyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  caloriesCont: {
+    backgroundColor: colors.white,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
 
   proteinCont: {
@@ -116,10 +160,18 @@ const styles = ExStyleSheet.create({
   },
 
   paramText: {
-    fontSize: 16,
+    fontSize: 14,
     color: colors.white,
     '@media (max-width: 320)': {
-      fontSize: 14,
+      fontSize: 12,
+    },
+  },
+
+  caloriesText: {
+    fontSize: 14,
+    color: colors.mainText,
+    '@media (max-width: 320)': {
+      fontSize: 12,
     },
   },
 });

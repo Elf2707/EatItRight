@@ -1,6 +1,6 @@
 // @flow
 /* eslint-disable class-methods-use-this */
-import { action, observable, computed } from 'mobx';
+import { action, observable, computed, runInAction, autorun } from 'mobx';
 import _ from 'lodash';
 
 import { settingsDbService } from '../dbServices';
@@ -20,6 +20,10 @@ export default class SettingsStore {
 
   constructor(store: MainStoreData) {
     this.store = store;
+
+    autorun(() => {
+      console.log('tttttt --- autorun', this.sex);
+    });
   }
 
   get lifeStyles(): Array<LifeStyleType> {
@@ -48,19 +52,27 @@ export default class SettingsStore {
     return (baseMG + baseKM) / 2;
   }
 
-  get calories(): number {
-    return this.baseCalories * this.getLifeStyleKoef();
+  @computed get sexIndex(): number {
+    return this.sex === 'male' ? 0 : 1;
+  }
+
+  @computed get lifeStyleIndex(): number {
+    return this.lifeStyles.findIndex(ls => this.lifeStyle === ls);
+  }
+
+  @computed get calories(): number {
+    return _.round(this.baseCalories * this.getLifeStyleKoef());
   }
 
   @computed get proteinsLimit(): number {
     return _.round(((this.protsPerc / 100) * this.calories) / 4, 1);
   }
 
-  @computed get fatsLimit() {
+  @computed get fatsLimit(): number {
     return _.round(((this.fatsPerc / 100) * this.calories) / 9, 1);
   }
 
-  @computed get carbsLimit() {
+  @computed get carbsLimit(): number {
     return _.round(((this.carbsPerc / 100) * this.calories) / 4, 1);
   }
 

@@ -7,16 +7,13 @@ export async function load(): Promise<?SettingsData> {
     const user = firebase.auth().currentUser;
 
     if (user && user._user) {
-      const settings = await firebase.firestore()
+      const settingsDoc = await firebase.firestore()
         .collection('settings')
         .doc(user._user.uid)
         .get();
 
-      return settings;
+      return settingsDoc.data();
     }
-
-    console.log('tttttttt --- kkdskfmklds');
-    console.log(user);
   } catch (err) {
     logger.log(err);
   }

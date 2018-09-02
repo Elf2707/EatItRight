@@ -38,19 +38,25 @@ export default class Settings extends React.Component<Props, State> {
   keyboardDidHideListener: KeyboardEventListener;
   scrollView: ScrollView;
 
-  state = {
-    sexIndex: 0,
-    lifeStyleIndex: 0,
-    weight: 85,
-    height: 183,
-    waist: 85,
-    age: 39,
-    protsPerc: 40,
-    fatsPerc: 20,
-    carbsPerc: 40,
-    inputYPos: 0,
-    animValue: new Animated.Value(0),
-  };
+  constructor(props: Props) {
+    super(props);
+
+    const { settingsStore } = this.props;
+
+    this.state = {
+      sexIndex: -1,
+      lifeStyleIndex: -1,
+      weight: settingsStore.weight,
+      height: settingsStore.height,
+      waist: settingsStore.waist,
+      age: settingsStore.age,
+      protsPerc: settingsStore.protsPerc,
+      fatsPerc: settingsStore.fatsPerc,
+      carbsPerc: settingsStore.carbsPerc,
+      inputYPos: 0,
+      animValue: new Animated.Value(0),
+    };
+  }
 
   componentDidMount() {
     this.keyboardDidShowListener = Keyboard.addListener(
@@ -67,6 +73,22 @@ export default class Settings extends React.Component<Props, State> {
   componentWillUnmount() {
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
+  }
+
+  componentDidAppear() {
+    const { settingsStore } = this.props;
+
+    this.setState({
+      sexIndex: settingsStore.sexIndex,
+      lifeStyleIndex: settingsStore.lifeStyleIndex,
+      weight: settingsStore.weight,
+      height: settingsStore.height,
+      waist: settingsStore.waist,
+      age: settingsStore.age,
+      protsPerc: settingsStore.protsPerc,
+      fatsPerc: settingsStore.fatsPerc,
+      carbsPerc: settingsStore.carbsPerc,
+    });
   }
 
   navigationButtonPressed = ({ buttonId }: OnNavBtnPressEvent) => {

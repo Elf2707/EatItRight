@@ -234,8 +234,9 @@ const styles = StyleSheet.create({
   },
 
   weightText: {
-    fontSize: 18,
-    color: colors.mainText,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.black,
   },
 
   btnsCont: {
