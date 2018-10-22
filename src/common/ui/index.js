@@ -9,3 +9,4 @@ export SvgMorphIcon from './SvgMorphIcon';
 export ErrorMsgView from './ErrorMsgView';
 export SuccessMsgView from './SuccessMsgView';
 export Spinner from './Spinner';
+export SimpleButton from './SimpleButton'

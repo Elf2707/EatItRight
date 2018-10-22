@@ -16,6 +16,8 @@ export default {
 
   // Black palette
   black: '#000000',
+  blackOp20: '#00000020',
+  blackOp40: '#00000040',
 
   // Gray palette
   gray1: '#eeeeee',

@@ -9,6 +9,8 @@ import FoodsList from '../modules/FoodsList';
 import EditFoodItem from '../modules/EditFoodItem';
 import Settings from '../modules/Settings';
 import Login from '../modules/Login';
+import PrepopulateFoodsDialog
+  from '../modules/FoodsList/dialogs/PrepopulateFoodsDialog';
 
 function providerHOC(WrappedComponent: React.ComponentType<*>) {
   const ResultComponent = (props: any) => (
@@ -45,4 +47,8 @@ export default function registerScreens() {
     () => providerHOC(Settings));
   Navigation.registerComponent('screens.Login',
     () => providerHOC(Login));
+
+  // Dialogs  
+  Navigation.registerComponent('dialogs.PrepopulateFoods',
+    () => providerHOC(PrepopulateFoodsDialog));
 }

@@ -1,5 +1,6 @@
 // @flow
 import { action, observable, computed } from 'mobx';
+import { Navigation } from 'react-native-navigation';
 import data from '../data';
 
 export default class FoodsStore {
@@ -53,5 +54,20 @@ export default class FoodsStore {
   @action
   setFoodItemsFilter(filter: string) {
     this.foodFilter = filter;
+  }
+
+  @action
+  initFoodsDb() {
+    Navigation.showModal({
+      component: {
+        name: 'dialogs.PrepopulateFoods',
+        passProps: { text: 'stack with one child' },
+        options: {
+          topBar: { visible: false },
+          screenBackgroundColor: 'transparent',
+          modalPresentationStyle: 'overCurrentContext',
+        },
+      },
+    });
   }
 }

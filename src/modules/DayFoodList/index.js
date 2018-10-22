@@ -58,6 +58,7 @@ export default class DayFoodList extends React.Component<Props, State> {
     });
 
     this.props.foodsStore.getDayFoods();
+    this.props.foodsStore.initFoodsDb();
   }
 
   componentWillUnmount() {
